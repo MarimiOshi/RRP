@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'rio', name: 'リオ', faceIcon: 'images/faces/rio_face.png', color: '#1e90ff', lightBg: '#e3f2fd', sendBtn: 'images/buttons/button_send_rio.png', msgCount: 10, dob: '2002年2月4日', birthplace: '愛知', dialect: '名古屋弁', personality: ['クール', '情熱的'], height: '160cm', weight: '48kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: '薄ピンク', libido: '強め', favPosition: '騎乗位', sensitivity: '感じやすい', favForeplay: 'キス' },
         { id: 'maya', name: 'マヤ', faceIcon: 'images/faces/maya_face.png', color: '#dda0dd', lightBg: '#f3e5f5', sendBtn: 'images/buttons/button_send_maya.png', msgCount: 7, dob: '2002年4月8日', birthplace: '石川', dialect: '金沢弁', personality: ['おっとり', '優しい'], height: '159cm', weight: '45kg', bust: 'Dカップ', nippleColor: '濃い茶色', pubicHair: '普通', pussyColor: 'ベージュ', libido: '普通', favPosition: '後背位', sensitivity: '普通', favForeplay: '愛撫' },
         { id: 'riku', name: 'リク', faceIcon: 'images/faces/riku_face.png', color: '#ffd700', lightBg: '#fff9c4', sendBtn: 'images/buttons/button_send_riku.png', msgCount: 0, dob: '2002年10月26日', birthplace: '京都', dialect: '京都弁', personality: ['明るい', '面白い'], height: '162cm', weight: '46kg', bust: 'Aカップ', nippleColor: '薄ピンク', pubicHair: '処理済み', pussyColor: 'ピンク', libido: '高め', favPosition: '対面座位', sensitivity: '超敏感', favForeplay: 'ディープキス' },
-        { id: 'ayaka', name: 'アヤカ', faceIcon: 'images/faces/ayaka_face.png', color: '#d3d3d3', lightBg: '#f5f5f5', sendBtn: 'images/buttons/button_send_ayaka.png', msgCount: 1, dob: '2003年6月20日', birthplace: '東京', dialect: '標準語', personality: ['ふわふわ', 'マイペース'], height: '166cm', weight: '47kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: '少し', pussyColor: '薄ピンク', libido: '普通', favPosition: '正常位', sensitivity: '普通', favForeplay: '耳舐め' }, // アヤカのカラーを白から薄いグレーに変更
+        { id: 'ayaka', name: 'アヤカ', faceIcon: 'images/faces/ayaka_face.png', color: '#d3d3d3', lightBg: '#f5f5f5', sendBtn: 'images/buttons/button_send_ayaka.png', msgCount: 1, dob: '2003年6月20日', birthplace: '東京', dialect: '標準語', personality: ['ふわふわ', 'マイペース'], height: '166cm', weight: '47kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: '少し', pussyColor: '薄ピンク', libido: '普通', favPosition: '正常位', sensitivity: '普通', favForeplay: '耳舐め' },
         { id: 'mayuka', name: 'マユカ', faceIcon: 'images/faces/mayuka_face.png', color: '#90ee90', lightBg: '#e8f5e9', sendBtn: 'images/buttons/button_send_mayuka.png', msgCount: 12, dob: '2003年11月13日', birthplace: '大阪', dialect: '関西弁', personality: ['カメレオン', '努力家'], height: '160cm', weight: '45kg', bust: 'Cカップ', nippleColor: '薄茶色', pubicHair: '整えている', pussyColor: 'ピンク', libido: 'やや強め', favPosition: '四つん這い', sensitivity: '感じやすい', favForeplay: '指' },
         { id: 'rima', name: 'リマ', faceIcon: 'images/faces/rima_face.png', color: '#ff69b4', lightBg: '#fce4ec', sendBtn: 'images/buttons/button_send_rima.png', msgCount: 15, dob: '2004年3月26日', birthplace: '東京', dialect: '英語混じり', personality: ['ラップ担当', 'おしゃれ'], height: '161cm', weight: '44kg', bust: 'Aカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: 'ローズピンク', libido: '興味津々', favPosition: '屈曲位', sensitivity: '奥が弱い', favForeplay: 'クンニ' },
         { id: 'miihi', name: 'ミイヒ', faceIcon: 'images/faces/miihi_face.png', color: '#add8e6', lightBg: '#e1f5fe', sendBtn: 'images/buttons/button_send_miihi.png', msgCount: 17, dob: '2004年8月12日', birthplace: '京都', dialect: 'はんなり京都弁', personality: ['スマイルメーカー', '甘えん坊'], height: '158cm', weight: '42kg', bust: 'Bカップ', nippleColor: '桜色', pubicHair: 'うぶ毛程度', pussyColor: 'ベビーピンク', libido: '普通', favPosition: '正常位（バックも好き)', sensitivity: 'クリが敏感', favForeplay: '優しいキス' },
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let currentMember = null;
-    let previousScreenId = 'member-list-screen'; // フッター画面から戻るため
+    let previousScreenId = 'member-list-screen';
     let currentScreenId = 'member-list-screen';
 
     function initializeApp() {
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function navigateTo(screenId, isInitial = false) {
         console.log(`Navigating to: ${screenId}`);
-        if (currentScreenId !== screenId) { // 現在の画面と違う場合のみpreviousを更新
-             if (!['common-settings-screen', 'user-profile-screen'].includes(currentScreenId)) { // フッター画面からの遷移ではpreviousを更新しない
+        if (currentScreenId !== screenId) {
+             if (!['common-settings-screen', 'user-profile-screen'].includes(currentScreenId)) {
                 previousScreenId = currentScreenId;
             }
         }
@@ -43,9 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentScreenId = screenId;
 
         footerNavItems.forEach(item => {
-            const isActive = item.dataset.screen === screenId;
-            item.classList.toggle('active', isActive);
-            // アイコンの表示/非表示はCSSの.activeセレクタに任せる
+            item.classList.toggle('active', item.dataset.screen === screenId);
         });
 
         if (screenId === 'chat-room-screen' && currentMember) {
@@ -66,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         root.style.setProperty('--member-main-color', member.color);
         root.style.setProperty('--member-light-bg-color', member.lightBg || '#f8f8f8');
         root.style.setProperty('--member-chat-bubble-user', member.color);
-        // フッターアイコンの色は変更しないので、ここでは何もしない
+        // ボットのバブル背景は常に白なので、ここでは変更しない
+        // root.style.setProperty('--member-chat-bubble-bot', '#ffffff'); // CSSで設定済み
         console.log(`Theme applied for ${member.name}`);
     }
 
@@ -75,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
         root.style.removeProperty('--member-main-color');
         root.style.removeProperty('--member-light-bg-color');
         root.style.removeProperty('--member-chat-bubble-user');
-        // フッターアイコンの色はデフォルトに戻す（CSSで制御）
         console.log("Theme reset to default");
     }
 
@@ -89,9 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             li.classList.add('member-list-item');
             li.dataset.memberId = member.id;
 
-            // 左側のクリック可能エリア (アイコン + 名前)
             const clickableArea = document.createElement('div');
-            clickableArea.classList.add('clickable-area'); // CSSでスタイリングするため
+            clickableArea.classList.add('clickable-area');
             clickableArea.innerHTML = `
                 <div class="member-icon-wrapper" style="border-color: ${member.color};">
                     <img src="${member.faceIcon}" alt="${member.name}">
@@ -101,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
             clickableArea.addEventListener('click', () => openChatRoom(member.id));
             li.appendChild(clickableArea);
 
-            // 右側のメッセージ数エリア
             const messageCountWrapper = document.createElement('div');
             messageCountWrapper.classList.add('message-count-wrapper');
             messageCountWrapper.innerHTML = `
@@ -132,14 +128,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const chatLogDiv = document.getElementById('chat-log');
         chatLogDiv.innerHTML = `
-            <div class="message-bubble bot">
-                <div class="message-icon-bot"><img src="${member.faceIcon}" alt="${member.name}"></div>
-                <div class="message-text large-placeholder"></div>
+            <div class="message-group bot">
+                <div class="message-sender-info">
+                    <div class="message-icon-bot" style="border-color: ${member.color};"><img src="${member.faceIcon}" alt="${member.name}"></div>
+                    <span class="message-sender-name">${member.name}</span>
+                </div>
+                <div class="message-bubble bot-bubble">
+                    <div class="message-text large-placeholder"></div>
+                </div>
             </div>
-            <div class="message-bubble user">こんにちは！</div>
-            <div class="message-bubble bot">
-                <div class="message-icon-bot"><img src="${member.faceIcon}" alt="${member.name}"></div>
-                <div class="message-text">${member.name}です！よろしくね！</div>
+            <div class="message-group user">
+                <div class="message-bubble user">こんにちは！</div>
+            </div>
+            <div class="message-group bot">
+                <div class="message-sender-info">
+                    <div class="message-icon-bot" style="border-color: ${member.color};"><img src="${member.faceIcon}" alt="${member.name}"></div>
+                    <span class="message-sender-name">${member.name}</span>
+                </div>
+                <div class="message-bubble bot-bubble">
+                    <div class="message-text">${member.name}です！よろしくね！</div>
+                </div>
             </div>
         `;
 
@@ -186,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settingColorSpan.style.color = getContrastYIQ(member.color);
 
         document.getElementById('setting-birthplace').textContent = member.birthplace || '未設定';
+        // ... (他の設定項目も同様に) ...
         document.getElementById('setting-dialect').textContent = member.dialect || '未設定';
         document.getElementById('setting-personality').textContent = Array.isArray(member.personality) ? member.personality.join(', ') : (member.personality || '未設定');
         document.getElementById('setting-height').textContent = member.height || '未設定';
@@ -198,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('setting-fav-position').textContent = member.favPosition || '未設定';
         document.getElementById('setting-sensitivity').textContent = member.sensitivity || '未設定';
         document.getElementById('setting-fav-foreplay').textContent = member.favForeplay || '未設定';
+
 
         const settingsScreen = document.getElementById('member-settings-screen');
         const settingsHeader = settingsScreen.querySelector('.screen-header');
@@ -237,29 +247,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         document.getElementById('back-to-chat-btn').addEventListener('click', () => navigateTo('chat-room-screen'));
 
-        // フッター画面からの戻るボタン
         document.querySelectorAll('.back-from-footer-screen').forEach(button => {
             button.addEventListener('click', () => {
-                navigateTo(previousScreenId || 'member-list-screen'); // 直前の画面に戻る
+                navigateTo(previousScreenId || 'member-list-screen');
             });
         });
 
-
         document.getElementById('send-button').addEventListener('click', () => {
             const userInputField = document.getElementById('user-input');
-            if (userInputField.value.trim() !== '' && currentMember) {
-                const chatLogDiv = document.getElementById('chat-log');
-                const userMsgDiv = document.createElement('div');
-                userMsgDiv.classList.add('message-bubble', 'user');
-                userMsgDiv.textContent = userInputField.value;
-                chatLogDiv.appendChild(userMsgDiv);
-                chatLogDiv.scrollTop = chatLogDiv.scrollHeight;
+            const messageText = userInputField.value.trim();
+            if (messageText !== '' && currentMember) {
+                appendChatMessage(messageText, 'user'); // ユーザーメッセージを追加
                 userInputField.value = '';
+                // TODO: ここでAIに応答を要求し、appendChatMessage(aiResponse, 'bot', currentMember) のように呼び出す
             }
         });
         document.getElementById('save-settings-btn').addEventListener('click', () => {
             if(currentMember) alert(`「${currentMember.name}」の設定を保存しました。(機能未実装)`);
         });
+    }
+
+    // チャットメッセージ追加関数 (新しい構造に対応)
+    function appendChatMessage(text, sender, memberData = null) {
+        const chatLogDiv = document.getElementById('chat-log');
+        const messageGroup = document.createElement('div');
+        messageGroup.classList.add('message-group', sender);
+
+        if (sender === 'bot' && memberData) {
+            messageGroup.innerHTML = `
+                <div class="message-sender-info">
+                    <div class="message-icon-bot" style="border-color: ${memberData.color};"><img src="${memberData.faceIcon}" alt="${memberData.name}"></div>
+                    <span class="message-sender-name">${memberData.name}</span>
+                </div>
+                <div class="message-bubble bot-bubble">
+                    <div class="message-text">${text}</div>
+                </div>
+            `;
+        } else if (sender === 'user') {
+            messageGroup.innerHTML = `
+                <div class="message-bubble user">${text}</div>
+            `;
+        }
+        chatLogDiv.appendChild(messageGroup);
+        chatLogDiv.scrollTop = chatLogDiv.scrollHeight;
     }
 
     initializeApp();
