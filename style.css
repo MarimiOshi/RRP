@@ -10,10 +10,10 @@
     --footer-nav-text-color: #888888;
     --footer-nav-active-text-color: #333333;
 
-    --member-main-color: #FFA500; /* Mako Orange - JSで上書き */
-    --member-light-bg-color: #fff3e0; /* Mako Light Orange - JSで上書き */
+    --member-main-color: #FFA500; /* JSで上書き */
+    --member-light-bg-color: #fff3e0; /* JSで上書き */
     --member-chat-bubble-user: var(--member-main-color);
-    --member-chat-bubble-bot: #ffffff; /* ボットのバブル背景を白に */
+    --member-chat-bubble-bot: #ffffff;
     --bot-bubble-border-color: #f0f0f0;
 }
 
@@ -91,6 +91,10 @@ body {
     overflow-y: auto;
     padding: 15px;
 }
+.settings-content { /* 設定画面共通のパディング調整 */
+    padding: 10px;
+}
+
 
 #member-list-screen .screen-header h1 {
     text-align: left;
@@ -159,7 +163,7 @@ body {
 #chat-log {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* メッセージグループ間のスペース */
+    gap: 15px;
 }
 
 .message-group {
@@ -185,7 +189,7 @@ body {
     border-radius: 50%;
     margin-right: 8px;
     flex-shrink: 0;
-    border: 2px solid var(--member-main-color); /* JSで上書き */
+    border: 2px solid var(--member-main-color);
     background-color: #000;
 }
 .message-icon-bot img {
@@ -231,7 +235,6 @@ body {
     border-radius: 12px;
 }
 
-/* 考え中メッセージのドットアニメーション */
 .thinking-dots span {
     opacity: 0;
     animation: blink 1.4s infinite;
@@ -247,12 +250,11 @@ body {
     50% { opacity: 1; }
 }
 
-/* システムエラーメッセージのスタイル */
-.message-group.system-error { /* エラーメッセージはbotグループと同じ左寄せ */
+.message-group.system-error {
     align-items: flex-start;
-    max-width: 90%; /* エラーメッセージは少し幅広でも良い */
-    margin-left: auto;  /* 中央寄せにしたい場合 */
-    margin-right: auto; /* 中央寄せにしたい場合 */
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
 }
 .message-bubble.system-error-bubble {
     background-color: #ffebee;
@@ -261,11 +263,9 @@ body {
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 0.9em;
-    /* text-align: center; 左寄せのままで良い */
-    width: fit-content; /* 内容に合わせる */
-    min-width: 150px; /* 最低幅 */
+    width: fit-content;
+    min-width: 150px;
 }
-
 
 .chat-input-area {
     padding: 10px;
@@ -307,7 +307,8 @@ body {
     background-color: white;
 }
 #user-input:disabled {
-    background-color: #f0f0f0;
+    background-color: #e9ecef; /* 少し薄いグレー */
+    opacity: 0.7;
 }
 #send-button {
     background: none;
@@ -328,13 +329,13 @@ body {
     height: 100%;
 }
 
-/* --- メンバー設定 --- */
-.member-profile-icon-area {
+/* --- メンバー設定 & 共通設定 & プロフィール設定 共通スタイル --- */
+.member-profile-icon-area { /* メンバー設定のみ */
     display: flex;
     justify-content: center;
     padding: 20px 0;
 }
-.large-member-icon {
+.large-member-icon { /* メンバー設定のみ */
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -345,14 +346,15 @@ body {
     margin-bottom: 20px;
     background-color: #fff;
     border-radius: 8px;
-    padding: 0 15px;
+    padding: 0 15px; /* グループ内の左右パディング */
 }
 .settings-group h3 {
-    font-size: 0.9em;
-    color: #777;
-    padding: 15px 0 5px;
+    font-size: 0.95em; /* 少し大きく */
+    color: #555; /* 少し濃く */
+    padding: 15px 0 10px; /* パディング調整 */
     margin: 0;
     border-bottom: 1px solid #f0f0f0;
+    font-weight: 500; /* 少し太く */
 }
 .settings-list {
     list-style: none;
@@ -363,31 +365,53 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 14px 0; /* 項目の上下パディング調整 */
     border-bottom: 1px solid #f0f0f0;
     font-size: 1em;
+    gap: 15px; /* ラベルと入力要素の間隔 */
 }
 .settings-list li:last-child {
     border-bottom: none;
 }
-.settings-list li span:first-child {
-    color: #555;
+.settings-list li span:first-child { /* 左側のラベル */
+    color: #444; /* 少し濃く */
+    flex-shrink: 0;
+    flex-basis: 40%; /* ラベルの基本幅 */
+    word-break: keep-all;
+    font-size: 0.9em; /* ラベルの文字を少し小さく */
 }
-.setting-value {
-    padding: 5px 10px;
-    background-color: var(--base-bg-color);
+.setting-value { /* メンバー設定画面の表示用値 */
+    padding: 6px 12px; /* パディング調整 */
+    background-color: #f0f0f0; /* 背景色変更 */
     border-radius: 15px;
     font-size: 0.9em;
     color: #333;
-    border: 1px solid #e0e0e0;
+    /* border: 1px solid #e0e0e0; 枠線は無くても良いかも */
+    text-align: right; /* 右寄せ */
+    flex-grow: 1; /* 残りのスペースを埋める */
 }
+.setting-select,
+.setting-input {
+    padding: 8px 10px;
+    border: 1px solid #ccc; /* ボーダーを少し濃く */
+    border-radius: 6px;
+    font-size: 0.9em; /* 入力文字サイズ調整 */
+    background-color: #fff;
+    flex-grow: 1; /* 残りのスペースを埋める */
+    box-sizing: border-box;
+    min-width: 100px; /* 最小幅 */
+}
+.setting-input[type="number"] {
+    text-align: right;
+}
+
 .action-button {
     display: block;
     width: calc(100% - 30px);
-    margin: 20px auto;
+    margin: 25px auto; /* 上下マージン調整 */
     padding: 12px;
-    background-color: var(--member-main-color);
-    color: white; /* JSでgetContrastYIQを使って設定 */
+    background-color: var(--member-main-color); /* JSで上書き */
+    color: white; /* JSで上書き */
     border: none;
     border-radius: 20px;
     font-size: 1.1em;
