@@ -55,43 +55,50 @@
         <section id="member-settings-screen" class="screen">
             <header class="screen-header member-settings-header">
                 <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
-                <h1 id="settings-member-name"></h1>
-                 <div style="width: 34px;"></div> <!-- 右側のスペース調整用ダミー -->
+                <h1 id="settings-member-name-title"></h1>
+                <div style="width: 34px;"></div>
             </header>
             <main class="screen-content settings-content">
                 <div class="member-profile-icon-area">
-                    <img id="settings-member-icon" src="" alt="メンバーアイコン" class="large-member-icon">
+                    <img id="settings-member-icon-display" src="" alt="メンバーアイコン" class="large-member-icon">
                 </div>
                 <div class="settings-group">
                     <h3>基本設定</h3>
                     <ul class="settings-list">
-                        <li><span>生年月日</span><span id="setting-dob" class="setting-value"></span></li>
-                        <li><span>メンバーカラー</span><span id="setting-color" class="setting-value"></span></li>
-                        <li><span>出身</span><span id="setting-birthplace" class="setting-value"></span></li>
-                        <li><span>方言</span><span id="setting-dialect" class="setting-value"></span></li>
-                        <li><span>性格</span><span id="setting-personality" class="setting-value"></span></li>
-                        <li><span>身長</span><span id="setting-height" class="setting-value"></span></li>
-                        <li><span>体重</span><span id="setting-weight" class="setting-value"></span></li>
+                        <li><span>生年月日</span><input type="text" id="ms-dob" class="setting-input"></li>
+                        <li><span>メンバーカラー (HEX)</span><input type="text" id="ms-color" class="setting-input" placeholder="#RRGGBB"></li>
+                        <li><span>出身</span><input type="text" id="ms-birthplace" class="setting-input"></li>
+                        <li><span>方言</span><input type="text" id="ms-dialect" class="setting-input"></li>
+                        <li><span>性格 (表示用, カンマ区切り)</span><input type="text" id="ms-personalityChar" class="setting-input"></li>
+                        <li><span>身長</span><input type="text" id="ms-height" class="setting-input"></li>
+                        <li><span>体重</span><input type="text" id="ms-weight" class="setting-input"></li>
                     </ul>
                 </div>
                 <div class="settings-group">
-                    <h3>性的設定</h3>
+                    <h3>キャラクター特徴 (AI向け)</h3>
                     <ul class="settings-list">
-                        <li><span>胸のサイズ</span><span id="setting-bust" class="setting-value"></span></li>
-                        <li><span>乳首の色</span><span id="setting-nipple-color" class="setting-value"></span></li>
-                        <li><span>陰毛</span><span id="setting-pubic-hair" class="setting-value"></span></li>
-                        <li><span>まんこの色</span><span id="setting-pussy-color" class="setting-value"></span></li>
-                        <li><span>性欲</span><span id="setting-libido" class="setting-value"></span></li>
-                        <li><span>好きな体位</span><span id="setting-fav-position" class="setting-value"></span></li>
-                        <li><span>感度</span><span id="setting-sensitivity" class="setting-value"></span></li>
-                        <li><span>得意な前戯</span><span id="setting-fav-foreplay" class="setting-value"></span></li>
+                        <li><span>基本プロンプト</span><textarea id="ms-basePrompt" class="setting-textarea" rows="3"></textarea></li>
+                        <li><span>話し方の特徴 (カンマ区切り)</span><textarea id="ms-personalityTraits" class="setting-textarea" rows="3"></textarea></li>
                     </ul>
                 </div>
-                 <button id="save-member-settings-btn" class="action-button">メンバー設定を保存</button> <!-- ID変更 -->
+                <div class="settings-group">
+                    <h3>性的設定 (AI向け)</h3>
+                    <ul class="settings-list">
+                        <li><span>胸のサイズ</span><input type="text" id="ms-bust" class="setting-input"></li>
+                        <li><span>乳首の色</span><input type="text" id="ms-nippleColor" class="setting-input"></li>
+                        <li><span>陰毛</span><input type="text" id="ms-pubicHair" class="setting-input"></li>
+                        <li><span>まんこの色</span><input type="text" id="ms-pussyColor" class="setting-input"></li>
+                        <li><span>性欲</span><input type="text" id="ms-libido" class="setting-input"></li>
+                        <li><span>好きな体位</span><input type="text" id="ms-favPosition" class="setting-input"></li>
+                        <li><span>感度</span><input type="text" id="ms-sensitivity" class="setting-input"></li>
+                        <li><span>得意な前戯</span><input type="text" id="ms-favForeplay" class="setting-input"></li>
+                    </ul>
+                </div>
+                 <button id="save-member-settings-btn" class="action-button">メンバー設定を保存</button>
             </main>
         </section>
 
-        <!-- 画面4: 共通設定 (フッター) -->
+        <!-- 画面4: 共通設定 -->
         <section id="common-settings-screen" class="screen">
             <header class="screen-header">
                  <button id="back-to-prev-common-settings-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -121,7 +128,7 @@
                     </ul>
                 </div>
                 <div class="settings-group">
-                    <h3>その他 (UI設定例)</h3>
+                    <h3>その他</h3>
                     <ul class="settings-list">
                         <li>
                             <span>効果音</span>
@@ -135,7 +142,7 @@
                             <span>アプリテーマ</span>
                              <select id="setting-app-theme" class="setting-select">
                                 <option value="light" selected>ライト</option>
-                                <option value="dark">ダーク (未実装)</option>
+                                <option value="dark">ダーク</option>
                             </select>
                         </li>
                     </ul>
@@ -144,7 +151,7 @@
             </main>
         </section>
 
-        <!-- 画面5: ユーザープロフィール (フッター) -->
+        <!-- 画面5: ユーザープロフィール -->
         <section id="user-profile-screen" class="screen">
             <header class="screen-header">
                 <button id="back-to-prev-user-profile-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -216,7 +223,7 @@
         </nav>
     </div>
 
-    <script src="config.js"></script> <!-- APIキー -->
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
