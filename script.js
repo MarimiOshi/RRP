@@ -1,6 +1,6 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("NiziU Chat App Initializing - Full Features (Updated Colors)...");
+    console.log("NiziU Chat App Initializing - Full Features (Updated Colors & UI Brushup)...");
 
     const chatLogDiv = document.getElementById('chat-log');
     const userInputField = document.getElementById('user-input');
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMemberList();
         setupEventListeners();
         navigateTo(currentScreenId, true);
-        console.log("App Initialized with full features and updated colors.");
+        console.log("App Initialized with full features, updated colors, and UI brushup.");
     }
 
     function loadSettingsFromMemory() {
@@ -124,12 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updatedMember.sensitivity = document.getElementById('ms-sensitivity').value;
         updatedMember.favForeplay = document.getElementById('ms-favForeplay').value;
         members[memberIndex] = updatedMember;
-        currentMember = updatedMember; // 現在選択中のメンバー情報も更新
+        currentMember = updatedMember;
         localStorage.setItem('niziuChatMembersData', JSON.stringify(members));
         alert(`「${currentMember.name}」のキャラクター設定を保存しました！`);
         applyMemberTheme(currentMember);
         loadMemberSettingsUI(currentMember);
-        renderMemberList(); // メンバー一覧の色なども更新されるように
+        renderMemberList();
     }
 
     function applyAppTheme() {
@@ -140,11 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.log("Light theme applied.");
         }
-        // トークルームにいる場合、ヘッダーアイコンの色を再計算
-        if (currentScreenId === 'chat-room-screen' && currentMember) {
-            loadChatRoomUI(currentMember); // これでヘッダーアイコンの色も更新される
-        } else if (currentScreenId === 'member-settings-screen' && currentMember) {
-            loadMemberSettingsUI(currentMember); // 設定画面も同様
+        if (currentMember) { // 現在のメンバーがいる場合、テーマ更新後にUI要素の色を再適用
+            if (currentScreenId === 'chat-room-screen') {
+                loadChatRoomUI(currentMember);
+            } else if (currentScreenId === 'member-settings-screen') {
+                loadMemberSettingsUI(currentMember);
+            }
+            applyMemberTheme(currentMember); // CSSカスタムプロパティを再適用
         }
     }
 
@@ -228,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('chat-member-name').textContent = member.name;
         document.getElementById('send-button-icon').src = member.sendBtn;
         chatLogDiv.innerHTML = '';
-        // 返信候補は表示しない
+        // document.getElementById('reply-suggestions').innerHTML = ''; // 要素削除済み
 
         const chatRoomHeader = document.getElementById('chat-room-screen').querySelector('.screen-header');
         chatRoomHeader.style.backgroundColor = member.color;
