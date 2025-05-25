@@ -32,7 +32,7 @@ body.dark-theme {
     --default-text-color: #f0f0f0;
     --header-bg-color: #2c2c2e;
     --header-border-color: #3a3a3c;
-    /* --list-item-border-color: #3a3a3c; */
+    /* --list-item-border-color: #3a3a3c; */ /* メンバーリストの区切り線は疑似要素で対応中 */
     --footer-nav-bg-color: #2c2c2e;
     --footer-nav-shadow: 0 -1px 5px rgba(0,0,0,0.2);
     --footer-nav-text-color: #999999;
