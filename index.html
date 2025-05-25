@@ -5,43 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>NiziU Talk</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json"> <!-- PWA用、不要なら削除 -->
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#ffffff"> <!-- 全体背景を白に -->
+    <meta name="theme-color" content="#ffffff">
 </head>
 <body>
     <div id="app-container">
 
-        <!-- 画面1: メンバー一覧 -->
         <section id="member-list-screen" class="screen active">
             <header class="screen-header">
                 <h1>トーク</h1>
             </header>
             <main class="screen-content">
-                <ul id="member-list">
-                    <!-- メンバーはJavaScriptで動的に追加 -->
-                </ul>
+                <div class="list-section">
+                    <h2>グループ</h2>
+                    <ul id="group-chat-list">
+                        <!-- グループチャットはJSで動的に追加 -->
+                    </ul>
+                </div>
+                <div class="list-section">
+                    <h2>メンバー</h2>
+                    <ul id="member-list">
+                        <!-- 個人チャットメンバーはJSで動的に追加 -->
+                    </ul>
+                </div>
             </main>
         </section>
 
-        <!-- 画面2: トークルーム -->
         <section id="chat-room-screen" class="screen">
             <header class="screen-header chat-room-header">
                 <button id="back-to-list-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
-                <h1 id="chat-member-name"></h1>
+                <h1 id="chat-room-title"></h1>
                 <div class="chat-header-actions">
                     <button id="new-talk-btn" class="header-btn"><img src="images/icons/header_new_chat.png" alt="新規トーク"></button>
-                    <button id="member-settings-btn" class="header-btn"><img src="images/icons/header_menu.png" alt="設定"></button>
+                    <button id="chat-settings-btn" class="header-btn"><img src="images/icons/header_menu.png" alt="設定"></button>
                 </div>
             </header>
             <main class="screen-content chat-log-container">
-                <div id="chat-log">
-                    <!-- チャットメッセージがここに追加されます -->
-                </div>
+                <div id="chat-log"></div>
             </main>
             <footer class="chat-input-area">
-                <!-- 返信候補 <div id="reply-suggestions"> は削除 -->
                 <div class="input-wrapper">
                     <input type="text" id="user-input" placeholder="メッセージを入力...">
                     <button id="send-button"><img id="send-button-icon" src="" alt="送信"></button>
@@ -49,7 +53,6 @@
             </footer>
         </section>
 
-        <!-- 画面3: メンバー設定 -->
         <section id="member-settings-screen" class="screen">
             <header class="screen-header member-settings-header">
                 <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -65,6 +68,7 @@
                     <ul class="settings-list">
                         <li><span>生年月日</span><input type="text" id="ms-dob" class="setting-input"></li>
                         <li><span>メンバーカラー (HEX)</span><input type="text" id="ms-color" class="setting-input" placeholder="#RRGGBB"></li>
+                        <li><span>トーク画面背景 (HEX)</span><input type="text" id="ms-lightBg" class="setting-input" placeholder="#RRGGBB"></li>
                         <li><span>出身</span><input type="text" id="ms-birthplace" class="setting-input"></li>
                         <li><span>方言</span><input type="text" id="ms-dialect" class="setting-input"></li>
                         <li><span>性格 (表示用, カンマ区切り)</span><input type="text" id="ms-personalityChar" class="setting-input"></li>
@@ -96,7 +100,6 @@
             </main>
         </section>
 
-        <!-- 画面4: 共通設定 -->
         <section id="common-settings-screen" class="screen">
             <header class="screen-header">
                  <button id="back-to-prev-common-settings-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -149,7 +152,6 @@
             </main>
         </section>
 
-        <!-- 画面5: ユーザープロフィール -->
         <section id="user-profile-screen" class="screen">
             <header class="screen-header">
                 <button id="back-to-prev-user-profile-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -201,7 +203,6 @@
             </main>
         </section>
 
-        <!-- フッターナビゲーション -->
         <nav id="footer-nav">
             <button class="nav-item active" data-screen="member-list-screen" data-default-icon-on="images/icons/nav_talk_on.png" data-default-icon-off="images/icons/nav_talk_off.png">
                 <img src="images/icons/nav_talk_on.png" alt="トーク" class="nav-icon-on">
@@ -220,7 +221,6 @@
             </button>
         </nav>
     </div>
-
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
