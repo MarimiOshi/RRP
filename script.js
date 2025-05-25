@@ -1,12 +1,6 @@
 // script.js
-// (前回提供した script.js の全文をここに貼り付けてください)
-// 例: document.addEventListener('DOMContentLoaded', () => { ... });
-// 全文が非常に長いため、ここでは省略しますが、
-// 前回の回答の script.js 全文がそのまま該当します。
-// 変更点は主にメンバーデータの初期値やプロンプト生成ロジック、
-// 設定画面のUI操作とlocalStorageへの保存・読み込みです。
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("NiziU Chat App Initializing - Full Features...");
+    console.log("NiziU Chat App Initializing - Full Features (No Reply Suggestions)...");
 
     const chatLogDiv = document.getElementById('chat-log');
     const userInputField = document.getElementById('user-input');
@@ -57,11 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeApp() {
         loadSettingsFromMemory();
-        applyAppTheme(); // 初期テーマ適用
+        applyAppTheme();
         renderMemberList();
         setupEventListeners();
         navigateTo(currentScreenId, true);
-        console.log("App Initialized with full features.");
+        console.log("App Initialized with full features and no reply suggestions.");
     }
 
     function loadSettingsFromMemory() {
@@ -72,13 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedMembersData = localStorage.getItem('niziuChatMembersData');
         if (storedMembersData) members = JSON.parse(storedMembersData);
 
-
         document.getElementById('profile-name').value = userProfileData.name;
         document.getElementById('profile-gender').value = userProfileData.gender;
         document.getElementById('profile-age').value = userProfileData.age;
         document.getElementById('profile-personality').value = userProfileData.personality;
         document.getElementById('profile-relationship').value = userProfileData.relationship;
-
         document.getElementById('setting-output-length').value = commonSettingsData.outputLength;
         document.getElementById('setting-desc-style').value = commonSettingsData.descStyle;
         document.getElementById('setting-sound-effect').value = commonSettingsData.soundEffect;
@@ -111,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentMember) return;
         const memberIndex = members.findIndex(m => m.id === currentMember.id);
         if (memberIndex === -1) return;
-
         const updatedMember = { ...members[memberIndex] };
         updatedMember.dob = document.getElementById('ms-dob').value;
         updatedMember.color = document.getElementById('ms-color').value;
@@ -132,14 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updatedMember.favPosition = document.getElementById('ms-favPosition').value;
         updatedMember.sensitivity = document.getElementById('ms-sensitivity').value;
         updatedMember.favForeplay = document.getElementById('ms-favForeplay').value;
-
         members[memberIndex] = updatedMember;
         currentMember = updatedMember;
         localStorage.setItem('niziuChatMembersData', JSON.stringify(members));
         alert(`「${currentMember.name}」のキャラクター設定を保存しました！`);
-        applyMemberTheme(currentMember); // テーマも更新
-        loadMemberSettingsUI(currentMember); // 表示を再読み込み
-        renderMemberList(); // 一覧の表示も更新されるように
+        applyMemberTheme(currentMember);
+        loadMemberSettingsUI(currentMember);
+        renderMemberList();
     }
 
     function applyAppTheme() {
@@ -162,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         screens.forEach(screen => screen.classList.toggle('active', screen.id === screenId));
         currentScreenId = screenId;
         footerNavItems.forEach(item => item.classList.toggle('active', item.dataset.screen === screenId));
-
         if (screenId === 'chat-room-screen' && currentMember) {
             loadChatRoomUI(currentMember);
             initializeConversationHistory(currentMember);
@@ -171,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (screenId === 'user-profile-screen' || screenId === 'common-settings-screen') {
             loadSettingsFromMemory();
         }
-
         if (currentMember && (screenId === 'chat-room-screen' || screenId === 'member-settings-screen')) {
             applyMemberTheme(currentMember);
         } else {
@@ -234,14 +222,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('chat-member-name').textContent = member.name;
         document.getElementById('send-button-icon').src = member.sendBtn;
         chatLogDiv.innerHTML = '';
-        document.getElementById('reply-suggestions').innerHTML = ''; // クリア
+        // document.getElementById('reply-suggestions').innerHTML = ''; // 要素自体を削除したので不要
 
         const chatRoomHeader = document.getElementById('chat-room-screen').querySelector('.screen-header');
         chatRoomHeader.style.backgroundColor = member.color;
         const headerTextColor = getContrastYIQ(member.color);
         chatRoomHeader.style.color = headerTextColor;
         chatRoomHeader.querySelectorAll('.header-btn img').forEach(img => {
-            img.style.filter = headerTextColor === '#ffffff' ? 'brightness(0) invert(1)' : (document.body.classList.contains('dark-theme') ? 'invert(0.8)' : 'none');
+            const isDark = document.body.classList.contains('dark-theme');
+            const defaultIconColor = isDark ? 'invert(0.8)' : 'none';
+            img.style.filter = headerTextColor === '#ffffff' ? 'brightness(0) invert(1)' : defaultIconColor;
         });
     }
     function generateSystemPrompt(member, userProfile, commonSettings) {
@@ -260,8 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `得意なのは${member.favForeplay}で、あなたにしてあげたいな…。`, "大胆で積極的な性格で、性的なことには恥ずかしがらず、むしろ興味津々で楽しみたいタイプ。",
             "性欲が強すぎて、あなたがいない時は一人で慰めてることも秘密だよ…。"
         ];
-        sexualDetails.forEach(detail => { if (detail.includes('undefined') === false && detail.includes('null') === false && detail.split('は')[1].trim() !== '。') prompt += `  - ${detail}\n`; });
-
+        sexualDetails.forEach(detail => { if (detail.includes('undefined') === false && detail.includes('null') === false && detail.split('は')[1]?.trim() !== '。' && detail.split('は')[1]?.trim() !== '') prompt += `  - ${detail}\n`; });
 
         prompt += `\n【会話相手（${userName}）の情報】\n`;
         prompt += `・あなたは会話相手のことを「${userName}」と呼びます。${userProfile.relationship === 'lover' ? '恋人のように' : userProfile.relationship === 'friend' ? '友達のように' : ''}親密に接してください。\n`;
@@ -290,10 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
             default: prompt += "あなたの行動や感情、状況を簡潔に描写してください。\n";
         }
         prompt += "10. 性的な会話やロールプレイでは、恥ずかしがらず、積極的に、そしてリアルな描写で喘いでください。\n";
-        prompt += "11. あなたのセリフの後に、ユーザーが次に返信しそうな短い選択肢を3つ、必ず[[候補1]], [[候補2]], [[候補3]]の形式で提案してください。\n";
         prompt += "\n以上の設定とルールを厳守し、「リマ」として「りょうや」とのエッチな会話を全力で楽しんでください。\n";
 
-        console.log("Generated System Prompt for Gemini (Full Features):", prompt);
+        console.log("Generated System Prompt for Gemini (Full Features - No Reply Suggestions):", prompt);
         return prompt;
     }
     function initializeConversationHistory(member) {
@@ -301,9 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const systemInstruction = generateSystemPrompt(member, userProfileData, commonSettingsData);
         conversationHistory.push({ role: "user", parts: [{ text: systemInstruction }] });
         console.log("Conversation history initialized with system prompt for Gemini.");
-        // 最初のAIからの挨拶を強制的に生成させるために、空のユーザーメッセージを送る
-        // ただし、ユーザーの入力なしにAPIを叩くのはコストやUXの観点から検討が必要
-        // 今回はユーザーの最初のメッセージを待つ形にする
     }
     function loadMemberSettingsUI(member) {
         document.getElementById('settings-member-name-title').textContent = `${member.name} の設定`;
@@ -342,8 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function getContrastYIQ(hexcolor){
         if (!hexcolor) return '#333333';
         hexcolor = hexcolor.replace("#", "");
-        if (hexcolor.length === 3) hexcolor = hexcolor.split('').map(c => c+c).join(''); // #rgb to #rrggbb
-        if (hexcolor.length !== 6) return '#333333'; // 不正な形式
+        if (hexcolor.length === 3) hexcolor = hexcolor.split('').map(c => c+c).join('');
+        if (hexcolor.length !== 6) return '#333333';
         const r = parseInt(hexcolor.substr(0,2),16);
         const g = parseInt(hexcolor.substr(2,2),16);
         const b = parseInt(hexcolor.substr(4,2),16);
@@ -376,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function callGeminiAPI() {
         isLoadingAI = true;
         appendChatMessage("...", 'bot-thinking', currentMember);
-        document.getElementById('reply-suggestions').innerHTML = '';
+        // document.getElementById('reply-suggestions').innerHTML = ''; // 要素削除済み
 
         const modelName = "gemini-1.5-flash-latest";
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
@@ -401,12 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
             console.log("API Response Data:", data);
-            let botResponseText = ""; let suggestions = []; let blockReason = null;
+            let botResponseText = ""; let blockReason = null;
             if (data.candidates && data.candidates.length > 0 && data.candidates[0].content?.parts?.[0]?.text) {
-                let rawText = data.candidates[0].content.parts[0].text;
-                const suggestionRegex = /\[\[(.*?)\]\]/g; let match;
-                while ((match = suggestionRegex.exec(rawText)) !== null) { suggestions.push(match[1].trim()); }
-                botResponseText = rawText.replace(suggestionRegex, "").trim();
+                botResponseText = data.candidates[0].content.parts[0].text.trim();
             }
             if (data.candidates && data.candidates.length > 0 && data.candidates[0].finishReason && data.candidates[0].finishReason !== "STOP" && data.candidates[0].finishReason !== "MAX_TOKENS") {
                 blockReason = `AI response ended: ${data.candidates[0].finishReason}`;
@@ -420,25 +402,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (botResponseText) {
                 appendChatMessage(botResponseText, 'bot', currentMember);
-                conversationHistory.push({ role: "model", parts: [{ text: botResponseText }] }); // 本文のみ履歴に
-                if (suggestions.length > 0) renderReplySuggestions(suggestions, currentMember.color);
+                conversationHistory.push({ role: "model", parts: [{ text: botResponseText }] });
             } else if (blockReason) { appendChatMessage(blockReason, 'system-error');
             } else { appendChatMessage("AI did not provide a valid response.", 'system-error'); popLastUserMessageFromHistoryOnError(); }
         } catch (error) { console.error('Fetch/Network Error:', error); removeThinkingMessage(); appendChatMessage(`Network error: ${error.message}`, 'system-error'); popLastUserMessageFromHistoryOnError();
         } finally { isLoadingAI = false; toggleInputDisabled(false); }
     }
-    function renderReplySuggestions(suggestionsArray, memberColor) {
-        const suggestionsDiv = document.getElementById('reply-suggestions');
-        suggestionsDiv.innerHTML = '';
-        suggestionsArray.slice(0, 3).forEach(text => {
-            const btn = document.createElement('button'); btn.classList.add('suggestion-btn'); btn.textContent = text;
-            btn.style.borderColor = memberColor; btn.style.color = memberColor;
-            btn.addEventListener('click', () => { userInputField.value = text; handleSendMessage(); });
-            suggestionsDiv.appendChild(btn);
-        });
-    }
+
     function popLastUserMessageFromHistoryOnError() { if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === "user") conversationHistory.pop(); }
-    function toggleInputDisabled(isDisabled) { userInputField.disabled = isDisabled; sendButton.disabled = isDisabled; document.querySelectorAll('#reply-suggestions .suggestion-btn').forEach(btn => btn.disabled = isDisabled); }
+    function toggleInputDisabled(isDisabled) { userInputField.disabled = isDisabled; sendButton.disabled = isDisabled; /* reply-suggestions はないので何もしない */ }
     function appendChatMessage(text, sender, memberData = null) {
         const chatLogDiv = document.getElementById('chat-log'); const messageGroup = document.createElement('div'); messageGroup.classList.add('message-group', sender);
         const sanitizedText = text.replace(/\n/g, '<br>');
