@@ -1,153 +1,372 @@
 /* style.css */
-body {
-    font-family: sans-serif;
-    margin: 0;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: #333; /* 基本の文字色 */
+:root {
+    --base-bg-color: #f8f8f8; /* 全体の背景色 (薄いグレー) */
+    --default-text-color: #333333;
+    --header-bg-color: #ffffff;
+    --header-border-color: #e0e0e0;
+    --list-item-border-color: #eeeeee;
+    --footer-nav-bg-color: #ffffff;
+    --footer-nav-border-color: #d0d0d0;
+    --footer-nav-text-color: #888888;
+    --footer-nav-active-text-color: #333333; /* アクティブ時の色をメンバーカラーにしたい場合はJSで操作 */
+
+    /* メンバーカラーのプレースホルダー (JSで上書き) */
+    --member-main-color: #FFA500; /* 例: オレンジ (マコ) */
+    --member-light-bg-color: #fff3e0; /* 例: オレンジの薄い背景 */
+    --member-chat-bubble-user: var(--member-main-color);
+    --member-chat-bubble-bot: #e0e0e0;
 }
 
-#chat-container {
-    width: 90%;
-    max-width: 600px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--base-bg-color);
+    color: var(--default-text-color);
+    overscroll-behavior-y: contain; /* iOSでの過度なスクロールを防ぐ */
+}
+
+#app-container {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    height: 80vh;
-    max-height: 700px; /* 最大高さを設定 */
+    height: 100vh; /* viewport height */
+    max-width: 480px; /* スマホ表示を想定した最大幅 */
+    margin: 0 auto; /* 中央寄せ */
+    background-color: #fff; /* アプリコンテナ自体の背景は白にする場合 */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 任意: PC表示時の影 */
+    overflow: hidden; /* 画面遷移時にコンテンツがはみ出ないように */
 }
 
-#character-info {
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
+/* --- 画面共通 --- */
+.screen {
+    display: none; /* 初期状態は非表示 */
+    flex-direction: column;
+    height: calc(100vh - 60px); /* フッターナビゲーションの高さを引く */
+    background-color: var(--base-bg-color); /* 各画面のデフォルト背景 */
+}
+.screen.active {
+    display: flex;
+}
+
+.screen-header {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #ddd;
+    justify-content: space-between; /* 基本はスペースビトウィーン */
+    padding: 10px 15px;
+    background-color: var(--header-bg-color);
+    border-bottom: 1px solid var(--header-border-color);
+    min-height: 40px; /* ヘッダーの最小高さ */
+    position: sticky; /* ヘッダーを固定する場合 */
+    top: 0;
+    z-index: 10;
+}
+.screen-header h1 {
+    font-size: 1.2em;
+    margin: 0;
+    text-align: center;
+    flex-grow: 1; /* 中央のタイトルがスペースを取るように */
+}
+.header-btn {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-btn img {
+    width: 24px;
+    height: 24px;
+}
+.chat-header-actions {
+    display: flex;
+}
+.chat-header-actions .header-btn:not(:last-child) {
+    margin-right: 10px;
 }
 
-#character-icon {
+
+.screen-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+
+/* --- 画面1: メンバー一覧 --- */
+#member-list-screen .screen-header h1 {
+    text-align: left; /* 「トーク」は左寄せ */
+    flex-grow: 0; /* 左寄せのため */
+}
+#member-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.member-list-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0; /* 上下パディングでアイテム間のスペース調整 */
+    border-bottom: 1px solid var(--list-item-border-color);
+    cursor: pointer;
+}
+.member-list-item:last-child {
+    border-bottom: none;
+}
+.member-icon-wrapper {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     margin-right: 15px;
-    border: 2px solid white;
-    object-fit: cover; /* アイコンがコンテナに収まるように */
+    overflow: hidden;
+    border: 2px solid transparent; /* メンバーカラーで枠線をつける準備 */
 }
-
-#character-name {
-    margin: 0;
-    font-size: 1.2em;
+.member-icon-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.member-name {
+    font-size: 1.1em;
     font-weight: bold;
+    flex-grow: 1;
+}
+.message-count-wrapper {
+    display: flex;
+    align-items: center;
+    color: #888;
+    font-size: 0.9em;
+}
+.message-count-wrapper img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
 }
 
+
+/* --- 画面2: トークルーム --- */
+#chat-room-screen {
+    /* メンバーカラーを適用する例 (JSでdata属性などを付与して切り替え) */
+    /* background-color: var(--member-light-bg-color); */
+}
+#chat-room-screen .screen-header {
+    /* background-color: var(--member-main-color); */
+    /* color: white; */
+}
+#chat-room-screen .header-btn img { /* ヘッダーアイコンの色も調整が必要な場合 */
+    /* filter: brightness(0) invert(1); */
+}
+.chat-log-container {
+    padding: 10px; /* チャットログのパディング */
+    background-color: var(--member-light-bg-color); /* JSで設定 */
+}
 #chat-log {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* メッセージ間のスペース */
+    gap: 10px;
 }
-
-.message {
-    padding: 10px 15px;
+.message-bubble {
+    padding: 8px 12px;
     border-radius: 18px;
-    max-width: 75%; /* メッセージの最大幅 */
-    line-height: 1.4;
-    word-wrap: break-word; /* 長い単語を折り返す */
+    max-width: 75%;
+    word-wrap: break-word;
+    position: relative; /* スワイプや長押し操作の基準点 */
 }
-
-.user-message {
-    background-color: #007bff;
+.message-bubble.user {
+    background-color: var(--member-chat-bubble-user); /* JSで設定 */
     color: white;
     align-self: flex-end;
     border-bottom-right-radius: 5px;
 }
-
-.bot-message {
-    background-color: #e9e9eb;
-    color: #333;
+.message-bubble.bot {
+    background-color: var(--member-chat-bubble-bot);
+    color: var(--default-text-color);
     align-self: flex-start;
     border-bottom-left-radius: 5px;
+    display: flex; /* アイコンとテキストを横並びにするため */
+    align-items: flex-end; /* アイコンを下揃え */
+}
+.message-icon-bot { /* ボットのメッセージについてるアイコン */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0; /* アイコンが潰れないように */
+}
+.message-icon-bot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.message-text { /* ボットメッセージのテキスト部分 */
+    flex-grow: 1;
+}
+.message-text.large-placeholder { /* 画像2枚目の白い大きな四角 */
+    min-height: 150px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
 }
 
-.bot-message.error-message { /* エラーメッセージ専用スタイル */
-    background-color: #ffdddd;
-    color: #d8000c;
-    border: 1px solid #d8000c;
+.chat-input-area {
+    padding: 10px;
+    border-top: 1px solid var(--header-border-color);
+    background-color: #f0f0f0; /* 入力エリアの背景 */
 }
-
-#input-area {
+#reply-suggestions {
     display: flex;
-    padding: 15px;
-    border-top: 1px solid #ddd;
-    background-color: #f9f9f9;
+    flex-wrap: wrap; /* 候補が多い場合に折り返す */
+    gap: 8px;
+    margin-bottom: 10px;
+    justify-content: center; /* 中央寄せ */
 }
-
+.suggestion-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--member-main-color); /* JSで設定 */
+    color: var(--member-main-color); /* JSで設定 */
+    background-color: white;
+    border-radius: 15px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+.input-wrapper {
+    display: flex;
+    align-items: center;
+}
 #user-input {
     flex-grow: 1;
-    padding: 10px 15px; /* パディング調整 */
+    padding: 10px 15px;
     border: 1px solid #ccc;
     border-radius: 20px;
-    margin-right: 10px;
+    margin-right: 8px;
     font-size: 1em;
-    outline: none; /* フォーカス時の枠線を消す */
+    background-color: white;
 }
-
-#user-input:focus {
-    border-color: #007bff; /* フォーカス時にボーダー色変更 */
-}
-
-
 #send-button {
-    padding: 10px 20px;
-    background-color: #007bff;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 40px; /* ボタンサイズ調整 */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#send-button img {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* --- 画面3: メンバー設定 --- */
+#member-settings-screen {
+    /* background-color: var(--member-light-bg-color); */ /* JSで設定 */
+}
+.member-profile-icon-area {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+.large-member-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--member-main-color); /* JSで設定 */
+}
+.settings-group {
+    margin-bottom: 20px;
+    background-color: #fff; /* 設定グループの背景は白 */
+    border-radius: 8px;
+    padding: 0 15px; /* 左右のパディング */
+}
+.settings-group h3 {
+    font-size: 0.9em;
+    color: #777;
+    padding: 15px 0 5px; /* 上パディング、下は少し */
+    margin: 0;
+    border-bottom: 1px solid #f0f0f0; /* グループ内タイトルの下に薄い線 */
+}
+.settings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.settings-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0; /* 設定項目の上下パディング */
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1em;
+}
+.settings-list li:last-child {
+    border-bottom: none;
+}
+.settings-list li span:first-child { /* 左側の項目名 */
+    color: #555;
+}
+.setting-value { /* 右側の値 */
+    padding: 5px 10px;
+    background-color: var(--base-bg-color); /* 値の背景は薄いグレー */
+    border-radius: 15px;
+    font-size: 0.9em;
+    color: #333;
+    border: 1px solid #e0e0e0; /* 値の枠線 */
+}
+.action-button { /* 保存ボタンなど */
+    display: block;
+    width: calc(100% - 30px); /* 左右padding分を引く */
+    margin: 20px auto;
+    padding: 12px;
+    background-color: var(--member-main-color); /* JSで設定 */
     color: white;
     border: none;
     border-radius: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.2s ease; /* ホバー効果を滑らかに */
+    text-align: center;
 }
 
-#send-button:hover {
-    background-color: #0056b3;
-}
 
-#send-button:disabled { /* 送信不可時のスタイル */
-    background-color: #cccccc;
-    cursor: not-allowed;
+/* --- フッターナビゲーション --- */
+#footer-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--footer-nav-bg-color);
+    border-top: 1px solid var(--footer-nav-border-color);
+    height: 60px; /* フッターの高さ */
+    position: sticky; /* フッターを固定 */
+    bottom: 0;
+    z-index: 10;
 }
-
-/* ローディング表示用のスタイル */
-.thinking-message {
-    color: #555; /* 少し濃いめのグレー */
-    font-style: italic;
-    display: flex; /* ドットを横並びにするため */
-    align-items: center; /* ドットとテキストを垂直中央揃え */
+.nav-item {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* 各アイテムが均等に幅を取る */
+    padding: 5px 0;
+    color: var(--footer-nav-text-color);
+    font-size: 0.75em; /* 文字小さめ */
 }
-
-.thinking-dots {
-    margin-right: 5px; /* ドットとテキストの間隔 */
+.nav-item img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 2px; /* アイコンとテキストの間 */
 }
-
-.thinking-dots span {
-    opacity: 0;
-    animation: blink 1.4s infinite; /* アニメーション速度調整 */
-    font-weight: bold; /* ドットを少し太く */
+.nav-item.active {
+    color: var(--footer-nav-active-text-color);
+    /* アクティブ時のアイコン変更はJSで行う */
 }
-.thinking-dots span:nth-child(1) { animation-delay: 0s; }
-.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
-.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes blink {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
-}
+.nav-item.active .nav-icon-on { display: inline-block !important; }
+.nav-item.active .nav-icon-off { display: none !important; }
+.nav-item:not(.active) .nav-icon-on { display: none !important; }
+.nav-item:not(.active) .nav-icon-off { display: inline-block !important; }
