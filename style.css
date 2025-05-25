@@ -1,0 +1,190 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #333; /* 背景色 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 400px; /* スマホの一般的な幅 */
+    height: 100vh;
+    max-height: 850px; /* スマホの一般的な高さ */
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex; /* screen切り替えのため */
+    flex-direction: column; /* screen切り替えのため */
+    overflow: hidden; /* 内容がはみ出さないように */
+}
+
+.screen {
+    display: none; /* JavaScriptで表示を切り替える */
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.screen.active {
+    display: flex;
+}
+
+/* メンバー選択画面 */
+#member-select-screen {
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+#member-select-screen h2 {
+    color: #555;
+    margin-bottom: 30px;
+}
+.member-button {
+    display: block;
+    width: 80%;
+    padding: 15px;
+    margin: 15px auto;
+    font-size: 1.2em;
+    background-color: #5c67f2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.member-button:hover {
+    background-color: #4a54c2;
+}
+
+/* メインゲーム画面 */
+#header-area {
+    padding: 10px 15px;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: #444;
+    border-bottom: 1px solid #ccc;
+}
+#current-member-name {
+    font-weight: bold;
+}
+
+#image-area {
+    flex: 3; /* 画面比率調整 */
+    background-color: #ddd; /* デフォルト背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative; /* 背景画像用 */
+    background-size: cover;
+    background-position: center;
+}
+#member-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* アスペクト比を保つ */
+}
+
+#text-area {
+    flex: 2; /* 画面比率調整 */
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    overflow-y: auto; /* 内容が多い場合にスクロール */
+    display: flex;
+    flex-direction: column;
+}
+#situation-text {
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    color: #333;
+    flex-shrink: 0; /* 可変にしない */
+}
+#dialogue-box {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fff;
+    flex-grow: 1; /* 残りのスペースを埋める */
+    display: flex;
+    flex-direction: column;
+    min-height: 80px; /* 最低限の高さを確保 */
+}
+#character-name-display {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #5c67f2;
+}
+#dialogue-text {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #222;
+    white-space: pre-wrap; /* 改行を反映 */
+    flex-grow: 1;
+}
+
+
+#choices-area {
+    flex: 2; /* 画面比率調整 */
+    padding: 10px 15px 20px 15px; /* 下に余白 */
+    background-color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* ボタンを均等配置 */
+    border-top: 1px solid #ccc;
+}
+.choice-button {
+    width: 100%;
+    padding: 12px 10px;
+    margin: 5px 0;
+    font-size: 0.95em;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.choice-button:hover {
+    background-color: #f0f0f0;
+}
+.choice-button:active {
+    transform: scale(0.98);
+}
+
+/* エンディング画面 */
+#ending-screen {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background-color: #2c3e50;
+    color: white;
+}
+#ending-screen h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+#ending-screen p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+#restart-button {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
