@@ -10,11 +10,11 @@
     --footer-nav-text-color: #888888;
     --footer-nav-active-text-color: #333333;
 
-    --member-main-color: #FFA500; /* Mako Orange */
-    --member-light-bg-color: #fff3e0; /* Mako Light Orange */
+    --member-main-color: #FFA500; /* Mako Orange - JSで上書き */
+    --member-light-bg-color: #fff3e0; /* Mako Light Orange - JSで上書き */
     --member-chat-bubble-user: var(--member-main-color);
     --member-chat-bubble-bot: #ffffff; /* ボットのバブル背景を白に */
-    --bot-bubble-border-color: #f0f0f0; /* ボットバブルの枠線 */
+    --bot-bubble-border-color: #f0f0f0;
 }
 
 body {
@@ -171,23 +171,22 @@ body {
 }
 .message-group.bot {
     align-items: flex-start;
-    max-width: 85%; /* ボットのメッセージグループ全体の最大幅 */
+    max-width: 85%;
 }
 
-.message-sender-info { /* ボットのアイコンと名前のコンテナ */
+.message-sender-info {
     display: flex;
     align-items: center;
-    margin-bottom: 4px; /* 名前とバブルの間 */
-    /* padding-left: 5px; /* アイコンの左に少し余白 */
+    margin-bottom: 4px;
 }
 .message-icon-bot {
-    width: 36px; /* アイコンサイズ調整 */
-    height: 36px; /* アイコンサイズ調整 */
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     margin-right: 8px;
     flex-shrink: 0;
-    border: 2px solid var(--member-main-color); /* アイコンにメンバーカラーの枠線 */
-    background-color: #000; /* アイコン背景を黒に（画像がない場合用） */
+    border: 2px solid var(--member-main-color); /* JSで上書き */
+    background-color: #000;
 }
 .message-icon-bot img {
     width: 100%;
@@ -197,13 +196,13 @@ body {
 }
 .message-sender-name {
     font-size: 0.9em;
-    color: #333; /* 名前の色を少し濃く */
-    font-weight: 500; /* 少し太く */
+    color: #333;
+    font-weight: 500;
 }
 
 .message-bubble {
     padding: 10px 14px;
-    border-radius: 16px; /* 角丸を少し調整 */
+    border-radius: 16px;
     word-wrap: break-word;
     position: relative;
     line-height: 1.45;
@@ -211,31 +210,62 @@ body {
 .message-bubble.user {
     background-color: var(--member-chat-bubble-user);
     color: white;
-    /* align-self: flex-end;  親の.message-group.userで制御 */
     border-bottom-right-radius: 5px;
-    max-width: 80%; /* ユーザーバブルの最大幅 */
+    max-width: 80%;
 }
-.message-bubble.bot-bubble { /* ボットのバブル */
-    background-color: var(--member-chat-bubble-bot); /* 白 */
+.message-bubble.bot-bubble {
+    background-color: var(--member-chat-bubble-bot);
     color: var(--default-text-color);
-    /* align-self: flex-start; 親の.message-group.botで制御 */
     border-bottom-left-radius: 5px;
-    border-top-left-radius: 0; /* アイコン側の角を直角に */
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05); /* 軽い影 */
-    /* border: 1px solid var(--bot-bubble-border-color); */ /* 必要なら枠線 */
-    width: 100%; /* 親のmax-widthに追従 */
+    border-top-left-radius: 0;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    width: 100%;
 }
 
 .message-text {
-    /* 特にスタイル不要 */
+    /* スタイルなし */
 }
-.message-text.large-placeholder { /* 画像の大きな白い四角のスタイル */
-    min-height: 220px; /* 高さを調整 */
-    background-color: #ffffff; /* 冗長だが明示 */
-    border-radius: 12px; /* 内部の角丸 */
-    /* 枠線はバブル自体で表現するため不要かも */
-    /* box-shadow: inset 0 0 5px rgba(0,0,0,0.03); */ /* 内部に僅かな影 (任意) */
+.message-text.large-placeholder {
+    min-height: 220px;
+    background-color: #ffffff;
+    border-radius: 12px;
 }
+
+/* 考え中メッセージのドットアニメーション */
+.thinking-dots span {
+    opacity: 0;
+    animation: blink 1.4s infinite;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.thinking-dots span:nth-child(1) { animation-delay: 0s; }
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* システムエラーメッセージのスタイル */
+.message-group.system-error { /* エラーメッセージはbotグループと同じ左寄せ */
+    align-items: flex-start;
+    max-width: 90%; /* エラーメッセージは少し幅広でも良い */
+    margin-left: auto;  /* 中央寄せにしたい場合 */
+    margin-right: auto; /* 中央寄せにしたい場合 */
+}
+.message-bubble.system-error-bubble {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    /* text-align: center; 左寄せのままで良い */
+    width: fit-content; /* 内容に合わせる */
+    min-width: 150px; /* 最低幅 */
+}
+
 
 .chat-input-area {
     padding: 10px;
@@ -258,6 +288,11 @@ body {
     font-size: 0.9em;
     cursor: pointer;
 }
+.suggestion-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .input-wrapper {
     display: flex;
     align-items: center;
@@ -271,6 +306,9 @@ body {
     font-size: 1em;
     background-color: white;
 }
+#user-input:disabled {
+    background-color: #f0f0f0;
+}
 #send-button {
     background: none;
     border: none;
@@ -281,6 +319,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+#send-button:disabled img {
+    opacity: 0.5;
 }
 #send-button img {
     width: 100%;
@@ -346,7 +387,7 @@ body {
     margin: 20px auto;
     padding: 12px;
     background-color: var(--member-main-color);
-    color: white;
+    color: white; /* JSでgetContrastYIQを使って設定 */
     border: none;
     border-radius: 20px;
     font-size: 1.1em;
