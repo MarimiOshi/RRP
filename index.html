@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NiziUとの秘密の時間</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- メンバー選択画面 (初期表示) -->
+        <div id="member-select-screen" class="screen active">
+            <h2>誰とのストーリーを始めますか？</h2>
+            <button class="member-button" data-member="mako">マコ</button>
+            <button class="member-button" data-member="rima">リマ</button>
+            <button class="member-button" data-member="miihi">ミイヒ</button>
+        </div>
+
+        <!-- メインゲーム画面 (最初は非表示) -->
+        <div id="main-game-screen" class="screen">
+            <div id="header-area">
+                <span id="current-member-name"></span>
+                <span>好感度: <span id="affection-score">0</span></span>
+            </div>
+            <div id="image-area">
+                <!-- 背景画像はCSSで設定 or imgタグで動的変更 -->
+                <img id="member-image" src="" alt="NiziU Member">
+            </div>
+            <div id="text-area">
+                <div id="situation-text">
+                    <!-- 状況説明が表示される -->
+                </div>
+                <div id="dialogue-box">
+                    <p id="character-name-display"></p>
+                    <p id="dialogue-text">
+                        <!-- セリフが表示される -->
+                    </p>
+                </div>
+            </div>
+            <div id="choices-area">
+                <button class="choice-button" id="choice-1"></button>
+                <button class="choice-button" id="choice-2"></button>
+                <button class="choice-button" id="choice-3"></button>
+            </div>
+        </div>
+
+        <!-- エンディング画面 (例) -->
+        <div id="ending-screen" class="screen">
+            <h2 id="ending-title"></h2>
+            <p id="ending-message"></p>
+            <button id="restart-button">もう一度プレイする</button>
+        </div>
+    </div>
+
+    <!-- Gemini API SDK (最新版を確認してください) -->
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.1/dist/index.min.js"></script>
+    <!-- シナリオデータ -->
+    <script src="scenarios/mako.js"></script>
+    <script src="scenarios/rima.js"></script>
+    <script src="scenarios/miihi.js"></script>
+    <!-- メインのスクリプト -->
+    <script src="script.js"></script>
+</body>
+</html>
