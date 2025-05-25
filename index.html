@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json"> <!-- PWA用、不要なら削除 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#f8f8f8">
+    <meta name="theme-color" content="#ffffff"> <!-- 全体背景を白に -->
 </head>
 <body>
     <div id="app-container">
@@ -41,9 +41,7 @@
                 </div>
             </main>
             <footer class="chat-input-area">
-                <div id="reply-suggestions">
-                    <!-- 返信候補ボタンがここに追加 -->
-                </div>
+                <!-- 返信候補 <div id="reply-suggestions"> は削除 -->
                 <div class="input-wrapper">
                     <input type="text" id="user-input" placeholder="メッセージを入力...">
                     <button id="send-button"><img id="send-button-icon" src="" alt="送信"></button>
