@@ -7,6 +7,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    color: #333; /* 基本の文字色 */
 }
 
 #chat-container {
@@ -17,8 +18,9 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* chat-logのスクロールのため */
-    height: 80vh; /* ビューポートの高さの80% */
+    overflow: hidden;
+    height: 80vh;
+    max-height: 700px; /* 最大高さを設定 */
 }
 
 #character-info {
@@ -36,41 +38,50 @@ body {
     border-radius: 50%;
     margin-right: 15px;
     border: 2px solid white;
+    object-fit: cover; /* アイコンがコンテナに収まるように */
 }
 
 #character-name {
     margin: 0;
     font-size: 1.2em;
+    font-weight: bold;
 }
 
 #chat-log {
     flex-grow: 1;
     padding: 20px;
-    overflow-y: auto; /* メッセージが多い場合にスクロール */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
+    gap: 10px; /* メッセージ間のスペース */
 }
 
 .message {
     padding: 10px 15px;
     border-radius: 18px;
-    margin-bottom: 10px;
-    max-width: 70%;
+    max-width: 75%; /* メッセージの最大幅 */
     line-height: 1.4;
+    word-wrap: break-word; /* 長い単語を折り返す */
 }
 
 .user-message {
     background-color: #007bff;
     color: white;
-    align-self: flex-end; /* ユーザーメッセージを右寄せ */
+    align-self: flex-end;
     border-bottom-right-radius: 5px;
 }
 
 .bot-message {
     background-color: #e9e9eb;
     color: #333;
-    align-self: flex-start; /* ボットメッセージを左寄せ */
+    align-self: flex-start;
     border-bottom-left-radius: 5px;
+}
+
+.bot-message.error-message { /* エラーメッセージ専用スタイル */
+    background-color: #ffdddd;
+    color: #d8000c;
+    border: 1px solid #d8000c;
 }
 
 #input-area {
@@ -82,12 +93,18 @@ body {
 
 #user-input {
     flex-grow: 1;
-    padding: 10px;
+    padding: 10px 15px; /* パディング調整 */
     border: 1px solid #ccc;
     border-radius: 20px;
     margin-right: 10px;
     font-size: 1em;
+    outline: none; /* フォーカス時の枠線を消す */
 }
+
+#user-input:focus {
+    border-color: #007bff; /* フォーカス時にボーダー色変更 */
+}
+
 
 #send-button {
     padding: 10px 20px;
@@ -97,8 +114,40 @@ body {
     border-radius: 20px;
     cursor: pointer;
     font-size: 1em;
+    transition: background-color 0.2s ease; /* ホバー効果を滑らかに */
 }
 
 #send-button:hover {
     background-color: #0056b3;
+}
+
+#send-button:disabled { /* 送信不可時のスタイル */
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* ローディング表示用のスタイル */
+.thinking-message {
+    color: #555; /* 少し濃いめのグレー */
+    font-style: italic;
+    display: flex; /* ドットを横並びにするため */
+    align-items: center; /* ドットとテキストを垂直中央揃え */
+}
+
+.thinking-dots {
+    margin-right: 5px; /* ドットとテキストの間隔 */
+}
+
+.thinking-dots span {
+    opacity: 0;
+    animation: blink 1.4s infinite; /* アニメーション速度調整 */
+    font-weight: bold; /* ドットを少し太く */
+}
+.thinking-dots span:nth-child(1) { animation-delay: 0s; }
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
 }
