@@ -3,28 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>キャラクターチャット with Gemini</title>
+    <title>キャラクターチャット</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="chat-container">
-        <div id="character-profile">
-            <img id="character-avatar" src="https://via.placeholder.com/80" alt="Character Avatar">
+        <div id="character-info">
+            <img id="character-icon" src="https://via.placeholder.com/80" alt="Character Icon">
             <h2 id="character-name">キャラクター名</h2>
         </div>
         <div id="chat-log">
-            <!-- チャットメッセージがここに表示される -->
+            <!-- チャットメッセージがここに追加されます -->
         </div>
         <div id="input-area">
-            <textarea id="user-input" placeholder="メッセージを入力..." rows="1"></textarea>
+            <input type="text" id="user-input" placeholder="メッセージを入力...">
             <button id="send-button">送信</button>
         </div>
     </div>
 
-    <!-- 
-      script.js を type="module" で読み込みます。
-      これにより、script.js 内で ES Modules (import/export) が使用可能になります。
-    -->
-    <script src="script.js" type="module"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
