@@ -1,6 +1,6 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("NiziU Chat App Initializing - Full Features (Updated Colors & UI Brushup & Group Chat Base)...");
+    console.log("NiziU Chat App Initializing - Full Features (Persistent History & New Colors)...");
 
     const chatLogDiv = document.getElementById('chat-log');
     const userInputField = document.getElementById('user-input');
@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof GEMINI_API_KEY === 'undefined' || GEMINI_API_KEY === "YOUR_API_KEY" || GEMINI_API_KEY === "") {
         const errorMsg = "APIキーが設定されていません。config.js を確認してください。";
         console.error(errorMsg, "現在のキー:", typeof GEMINI_API_KEY !== 'undefined' ? GEMINI_API_KEY : "undefined");
-        if (chatLogDiv && typeof appendChatMessage === 'function') {
+        if (chatLogDiv && typeof appendChatMessage === 'function') { // appendChatMessageが定義されていれば使う
              appendChatMessage(errorMsg, 'system-error');
-        } else if(chatLogDiv) {
+        } else if(chatLogDiv) { // 暫定的な表示
             const errDiv = document.createElement('div');
             errDiv.textContent = errorMsg;
             errDiv.style.color = 'red'; errDiv.style.textAlign = 'center'; errDiv.style.padding = '10px';
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     console.log("API Key check passed.");
 
+    // --- メンバーデータ (新しいHEXコードを反映) ---
     let members = JSON.parse(localStorage.getItem('niziuChatMembersData')) || [
         { id: 'mako', name: 'マコ', faceIcon: 'images/faces/mako_face.png', color: '#ffb86a', lightBg: '#fff0e1', sendBtn: 'images/buttons/button_send_mako.png', msgCount: 9, basePrompt: "NiziUのリーダー、マコだよ！優しくて頼りになるお姉さんだよ。情熱的なところもあるんだ。あなたをいっぱい励ましたいな！", personalityTraits: ["丁寧な言葉遣い", "語尾に「～だよ」「～だね」をよく使う"], dob: '2001年4月4日', birthplace: '福岡', dialect: '軽い博多弁', personalityChar: ['天然', 'しっかり者'], height: '159cm', weight: '49kg', bust: 'Cカップ', nippleColor: '薄い茶色', pubicHair: '少し生えている', pussyColor: 'ピンク', libido: '普通', favPosition: '正常位', sensitivity: 'すぐイっちゃう', favForeplay: 'フェラ' },
         { id: 'rio', name: 'リオ', faceIcon: 'images/faces/rio_face.png', color: '#5bcde4', lightBg: '#e3f5ff', sendBtn: 'images/buttons/button_send_rio.png', msgCount: 10, basePrompt: "NiziUのダンス番長、リオ！クールビューティーって言われるけど、実は情に厚いんだ。友達みたいに話そ！", personalityTraits: ["サバサバした性格", "たまにツンデレ", "語尾に「～じゃん」「～っしょ」"], dob: '2002年2月4日', birthplace: '愛知', dialect: '名古屋弁', personalityChar: ['クール', '情熱的'], height: '160cm', weight: '48kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: '薄ピンク', libido: '強め', favPosition: '騎乗位', sensitivity: '感じやすい', favForeplay: 'キス' },
@@ -43,30 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
         outputLength: "medium", descStyle: "concise", soundEffect: "off", appTheme: "light"
     };
 
-    // --- グループチャットデータ (固定で1つ作成) ---
     const groupChats = [
         {
-            id: 'niziu_group_talk', // ユニークなID
+            id: 'niziu_group_talk',
             name: 'NiziU グループ 💕',
-            members: ['mako', 'rio', 'maya', 'riku', 'ayaka', 'mayuka', 'rima', 'miihi', 'nina'], // 全員参加
-            icon: members.slice(0,3).map(m => m.faceIcon), // 代表3人のアイコン
+            members: ['mako', 'rio', 'maya', 'riku', 'ayaka', 'mayuka', 'rima', 'miihi', 'nina'],
+            icon: members.slice(0,3).map(m => m.faceIcon),
             latestMessage: "みんなでワイワイトークしよっ！"
         }
     ];
 
-
-    let currentMemberOrGroup = null; // memberオブジェクトまたはgroupChatオブジェクトを保持
+    let currentMemberOrGroup = null;
     let previousScreenId = 'member-list-screen';
     let currentScreenId = 'member-list-screen';
-    let currentChatType = 'personal'; // 'personal' or 'group'
-    let currentChatId = null;       // member.id or group.id
+    let currentChatType = 'personal';
+    let currentChatId = null;
     let conversationHistory = [];
     let isLoadingAI = false;
 
     const LS_CONVERSATION_PREFIX = 'niziuChatConversation_';
     const LS_GROUP_CONVERSATION_PREFIX = 'niziuChatGroupConversation_';
-    const CURRENT_TALK_ID = 'current'; // 各チャットごとのトークID (今回は固定)
-
+    const CURRENT_TALK_ID = 'current';
 
     function initializeApp() {
         loadSettingsFromMemory();
@@ -75,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMemberListAndGroups();
         setupEventListeners();
         navigateTo(currentScreenId, true);
-        console.log("App Initialized with Group Chat and persistent history.");
+        console.log("App Initialized with Group Chat, persistent history and new colors (full script).");
     }
 
     function loadSettingsFromMemory() {
@@ -130,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updatedMember = { ...members[memberIndex] };
         updatedMember.dob = document.getElementById('ms-dob').value;
         updatedMember.color = document.getElementById('ms-color').value;
-        updatedMember.lightBg = document.getElementById('ms-lightBg').value || generateLightBg(updatedMember.color); // lightBgも入力可能に
+        updatedMember.lightBg = document.getElementById('ms-lightBg').value || generateLightBg(updatedMember.color);
         updatedMember.birthplace = document.getElementById('ms-birthplace').value;
         updatedMember.dialect = document.getElementById('ms-dialect').value;
         const personalityCharInput = document.getElementById('ms-personalityChar').value;
@@ -149,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updatedMember.sensitivity = document.getElementById('ms-sensitivity').value;
         updatedMember.favForeplay = document.getElementById('ms-favForeplay').value;
         members[memberIndex] = updatedMember;
-        currentMemberOrGroup = updatedMember; // 現在選択中の情報も更新
+        currentMemberOrGroup = updatedMember;
         localStorage.setItem('niziuChatMembersData', JSON.stringify(members));
         alert(`「${currentMemberOrGroup.name}」のキャラクター設定を保存しました！`);
         applyMemberTheme(currentMemberOrGroup);
@@ -162,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let r = parseInt(hexColor.slice(1, 3), 16);
         let g = parseInt(hexColor.slice(3, 5), 16);
         let b = parseInt(hexColor.slice(5, 7), 16);
-        r = Math.floor((r + 255 * 2.5) / 3.5); // より白に近づける度合いを調整
+        r = Math.floor((r + 255 * 2.5) / 3.5);
         g = Math.floor((g + 255 * 2.5) / 3.5);
         b = Math.floor((b + 255 * 2.5) / 3.5);
         return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
@@ -185,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentChatType === 'personal') {
                 applyMemberTheme(currentMemberOrGroup);
             } else {
-                resetToDefaultTheme(); // グループチャット時はデフォルトテーマ
+                resetToDefaultTheme();
             }
         }
     }
@@ -200,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
         screens.forEach(screen => screen.classList.toggle('active', screen.id === screenId));
         currentScreenId = screenId;
         footerNavItems.forEach(item => item.classList.toggle('active', item.dataset.screen === screenId));
-
         if (screenId === 'chat-room-screen' && currentMemberOrGroup) {
             loadChatRoomUI(currentMemberOrGroup);
             initializeConversationHistory(currentMemberOrGroup);
@@ -209,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (screenId === 'user-profile-screen' || screenId === 'common-settings-screen') {
             loadSettingsFromMemory();
         }
-
         if (currentMemberOrGroup && currentChatType === 'personal' && (screenId === 'chat-room-screen' || screenId === 'member-settings-screen')) {
             applyMemberTheme(currentMemberOrGroup);
         } else {
@@ -230,6 +226,50 @@ document.addEventListener('DOMContentLoaded', () => {
         root.style.removeProperty('--member-chat-bubble-user');
         console.log("Theme reset to default");
     }
+
+    // --- ★★★ ここから loadLatestMessages 関数の定義 ★★★ ---
+    function loadLatestMessages() {
+        members.forEach(member => {
+            const historyKey = `${LS_CONVERSATION_PREFIX}${member.id}_${CURRENT_TALK_ID}`;
+            const history = JSON.parse(localStorage.getItem(historyKey));
+            if (history && history.length > 0) {
+                let lastMeaningfulMessage = null;
+                for (let i = history.length - 1; i >= 0; i--) {
+                    // システムプロンプトは表示対象外
+                    if (!(i === 0 && history[i].role === "user" && history[i].parts[0].text.startsWith("あなたはロールプレイを行います。"))) {
+                        lastMeaningfulMessage = history[i].parts[0].text;
+                        break;
+                    }
+                }
+                member.latestMessage = lastMeaningfulMessage ? lastMeaningfulMessage.substring(0, 30) + (lastMeaningfulMessage.length > 30 ? "..." : "") : "まだメッセージはありません";
+            } else {
+                member.latestMessage = "新しいチャットを開始しましょう！";
+            }
+        });
+
+        groupChats.forEach(group => {
+            const historyKey = `${LS_GROUP_CONVERSATION_PREFIX}${group.id}_${CURRENT_TALK_ID}`;
+            const history = JSON.parse(localStorage.getItem(historyKey));
+            if (history && history.length > 0) {
+                let lastMeaningfulMessage = null;
+                for (let i = history.length - 1; i >= 0; i--) {
+                     if (!(i === 0 && history[i].role === "system" && history[i].parts[0].text.includes("グループチャットへようこそ！"))) {
+                        lastMeaningfulMessage = history[i].parts[0].text;
+                        if (history[i].role === "model" && history[i].speakerName) {
+                            lastMeaningfulMessage = `${history[i].speakerName}: ${lastMeaningfulMessage}`;
+                        }
+                        break;
+                    }
+                }
+                group.latestMessage = lastMeaningfulMessage ? lastMeaningfulMessage.substring(0, 30) + (lastMeaningfulMessage.length > 30 ? "..." : "") : "まだメッセージはありません";
+            } else {
+                 group.latestMessage = "グループチャットへようこそ！";
+            }
+        });
+        console.log("Latest messages loaded/updated.");
+    }
+    // --- ★★★ loadLatestMessages 関数ここまで ★★★ ---
+
     function renderMemberListAndGroups() {
         const memberListUl = document.getElementById('member-list');
         const groupChatListUl = document.getElementById('group-chat-list');
@@ -265,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.dataset.groupId = group.id;
             li.dataset.chatType = 'group';
             let iconsHtml = `<div class="list-item-icon-wrapper group-icon-stacked" style="border-color: #ccc;">`;
-            group.icon.slice(0, 2).forEach((iconSrc, index) => {
+            group.icon.slice(0, 2).forEach((iconSrc, index) => { // 最大2つのアイコンを表示
                 iconsHtml += `<img src="${iconSrc}" alt="member ${index+1}" style="z-index: ${3-index};">`;
             });
             iconsHtml += `</div>`;
@@ -303,10 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentChatType === 'personal') {
             document.getElementById('send-button-icon').src = chatEntity.sendBtn;
             chatSettingsBtn.style.display = 'flex';
-            chatSettingsBtn.onclick = () => navigateTo('member-settings-screen'); // 個人設定へ
+            chatSettingsBtn.onclick = () => navigateTo('member-settings-screen');
         } else {
             document.getElementById('send-button-icon').src = 'images/buttons/button_send_mako.png'; // グループ用デフォルト
-            chatSettingsBtn.style.display = 'none'; // グループ設定は今回未実装
+            chatSettingsBtn.style.display = 'none';
         }
         chatLogDiv.innerHTML = '';
 
@@ -396,11 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < conversationHistory.length; i++) {
                 const message = conversationHistory[i];
                 if (i === 0 && message.role === "user" && message.parts[0].text.startsWith("あなたはロールプレイを行います。")) continue;
-                if (i === 0 && message.role === "system" && message.parts[0].text.includes("グループチャットへようこそ！")) { // グループの初期システムメッセージは表示
+                if (i === 0 && message.role === "system" && message.parts[0].text.includes("グループチャットへようこそ！")) {
                      appendChatMessage(message.parts[0].text, 'system-message');
                      continue;
                 }
-
                 if (message.role === "user") {
                     appendChatMessage(message.parts[0].text, 'user');
                 } else if (message.role === "model") {
@@ -422,6 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Initialized new conversation history for ${entity.name} (${currentChatType}):`, conversationHistory);
         }
     }
+
     function saveConversationHistory() {
         if (!currentChatId) return;
         const historyKey = currentChatType === 'personal' ?
@@ -429,8 +469,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `${LS_GROUP_CONVERSATION_PREFIX}${currentChatId}_${CURRENT_TALK_ID}`;
         localStorage.setItem(historyKey, JSON.stringify(conversationHistory));
         console.log(`Conversation history saved for ${currentChatId} (${currentChatType})`);
-        loadLatestMessages();
-        renderMemberListAndGroups();
+        loadLatestMessages(); // 保存後に最新メッセージを更新
+        renderMemberListAndGroups(); // 一覧を再描画
     }
     function clearConversationHistoryForCurrent() {
         if (!currentChatId) return;
@@ -447,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('settings-member-icon-display').style.borderColor = member.color;
         document.getElementById('ms-dob').value = member.dob || '';
         document.getElementById('ms-color').value = member.color || '';
-        document.getElementById('ms-lightBg').value = member.lightBg || ''; // lightBgも入力可能に
+        document.getElementById('ms-lightBg').value = member.lightBg || '';
         document.getElementById('ms-birthplace').value = member.birthplace || '';
         document.getElementById('ms-dialect').value = member.dialect || '';
         document.getElementById('ms-personalityChar').value = Array.isArray(member.personalityChar) ? member.personalityChar.join(', ') : (member.personalityChar || '');
@@ -535,12 +575,12 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleInputDisabled(false);
     }
     async function callGeminiAPI(memberForPrompt) { // 個人チャット用
-        isLoadingAI = true;
+        isLoadingAI = true; // 関数開始時に設定
         appendChatMessage("...", 'bot-thinking', memberForPrompt);
         const modelName = "gemini-1.5-flash-latest";
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
         const requestBody = {
-            contents: conversationHistory, // 個人チャットの現在の履歴
+            contents: conversationHistory,
             generationConfig: { temperature: 0.9, topP: 0.95, maxOutputTokens: 2048 },
             safetySettings: [
                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" }, { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -551,19 +591,43 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody), });
             removeThinkingMessage();
-            if (!response.ok) { /* (エラー処理) */ popLastUserMessageFromHistoryOnError(); return; }
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: { message: "Response JSON parse failed" }}));
+                console.error('API Error:', errorData);
+                appendChatMessage(`APIエラー (${response.status}): ${errorData.error?.message || response.statusText}`, 'system-error');
+                popLastUserMessageFromHistoryOnError();
+                // isLoadingAI と toggleInputDisabled は finally で処理するのでここでは return のみ
+                return;
+            }
             const data = await response.json();
+            console.log("API Response Data (Personal):", data);
             let botResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            let blockReason = null;
+            if (data.candidates && data.candidates.length > 0 && data.candidates[0].finishReason && data.candidates[0].finishReason !== "STOP" && data.candidates[0].finishReason !== "MAX_TOKENS") {
+                blockReason = `AI response ended: ${data.candidates[0].finishReason}`;
+                if (data.candidates[0].safetyRatings) data.candidates[0].safetyRatings.forEach(r => { if(r.blocked) blockReason += ` (${r.category} - ${r.probability})`; });
+            }
+            if (data.promptFeedback?.blockReason) {
+                blockReason = `Request blocked: ${data.promptFeedback.blockReason}`;
+                if (data.promptFeedback.safetyRatings) data.promptFeedback.safetyRatings.forEach(r => { if(r.blocked) blockReason += ` (${r.category} - ${r.probability})`; });
+                popLastUserMessageFromHistoryOnError();
+            }
+
             if (botResponseText) {
                 appendChatMessage(botResponseText, 'bot', memberForPrompt);
                 conversationHistory.push({ role: "model", parts: [{ text: botResponseText }] });
                 saveConversationHistory();
-            } else { /* (エラー処理) */ popLastUserMessageFromHistoryOnError(); }
-        } catch (error) { /* (エラー処理) */ popLastUserMessageFromHistoryOnError();
-        } finally { /* isLoadingAI, toggleInputDisabled は呼び出し側で制御 */ }
+            } else if (blockReason) { appendChatMessage(blockReason, 'system-error');
+            } else { appendChatMessage("AI did not provide a valid response.", 'system-error'); popLastUserMessageFromHistoryOnError(); }
+        } catch (error) { console.error('Fetch/Network Error (Personal):', error); removeThinkingMessage(); appendChatMessage(`Network error: ${error.message}`, 'system-error'); popLastUserMessageFromHistoryOnError();
+        } finally {
+            // isLoadingAI と toggleInputDisabled は handleSendMessage の最後にまとめて行う
+            // isLoadingAI = false;
+            // toggleInputDisabled(false);
+        }
     }
     async function callGeminiAPIForGroupMember(speakingMember, groupName, userLastMessageText) {
-        // isLoadingAI = true; // ループ内で個別に立てない
+        // isLoadingAIはhandleSendMessageで制御
         appendChatMessage(`(${speakingMember.name}が入力中...)`, 'bot-thinking', speakingMember);
         const modelName = "gemini-1.5-flash-latest";
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
@@ -573,49 +637,62 @@ document.addEventListener('DOMContentLoaded', () => {
         groupContextHistory.push({ role: "user", parts: [{ text: memberSystemPrompt }] });
         groupContextHistory.push({ role: "model", parts: [{ text: `うん！${speakingMember.name}だよ！グループチャットだね、よろしく！` }] });
 
-        // グループ全体の会話履歴から直近のものをいくつか含める
-        const recentHistory = conversationHistory.slice(-5); // 最新5件程度
+        const recentHistory = conversationHistory.slice(-5);
         recentHistory.forEach(msg => {
-            // システムプロンプトは除外
             if (!(msg.role === "user" && msg.parts[0].text.startsWith("あなたはロールプレイを行います。")) &&
                 !(msg.role === "system" && msg.parts[0].text.includes("グループチャットへようこそ！"))) {
-                groupContextHistory.push(msg);
+                if(msg !== conversationHistory[0]) {
+                    groupContextHistory.push(msg);
+                }
             }
         });
-        // ユーザーの今回のメッセージが最新のはずなので、それが履歴の最後にあることを確認
-        // (handleSendMessageで既に追加済み)
 
         const requestBody = {
             contents: groupContextHistory,
             generationConfig: { temperature: 0.85, topP: 0.95, maxOutputTokens: 1024 },
-            safetySettings: [/* ... */]
+            safetySettings: [
+               { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" }, { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+               { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" }, { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+            ]
         };
-        console.log(`Calling Group Chat API for ${speakingMember.name} in group ${groupName} (context last 3):`, JSON.stringify(groupContextHistory.slice(-3), null, 2));
+        console.log(`Calling Group Chat API for ${speakingMember.name} in group ${groupName} (context last 3 of tailored):`, JSON.stringify(groupContextHistory.slice(-3), null, 2));
         try {
             const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
             removeThinkingMessage();
             if (!response.ok) { appendChatMessage(`(${speakingMember.name}のAPIエラー)`, 'system-error'); return; }
             const data = await response.json();
+            console.log(`API Response Data (Group - ${speakingMember.name}):`, data);
             let botResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            let blockReason = null;
+            if (data.candidates && data.candidates.length > 0 && data.candidates[0].finishReason && data.candidates[0].finishReason !== "STOP" && data.candidates[0].finishReason !== "MAX_TOKENS") {
+                blockReason = `AI response ended: ${data.candidates[0].finishReason}`;
+                 if (data.candidates[0].safetyRatings) data.candidates[0].safetyRatings.forEach(r => { if(r.blocked) blockReason += ` (${r.category} - ${r.probability})`; });
+            }
+            if (data.promptFeedback?.blockReason) {
+                blockReason = `Request blocked for ${speakingMember.name}: ${data.promptFeedback.blockReason}`;
+                if (data.promptFeedback.safetyRatings) data.promptFeedback.safetyRatings.forEach(r => { if(r.blocked) blockReason += ` (${r.category} - ${r.probability})`; });
+            }
+
             if (botResponseText) {
                 appendChatMessage(botResponseText, 'bot', speakingMember);
                 conversationHistory.push({ role: "model", parts: [{ text: botResponseText }], speakerId: speakingMember.id, speakerName: speakingMember.name });
-                saveConversationHistory(); // グループ全体の履歴を保存
+                saveConversationHistory();
+            } else if (blockReason) { appendChatMessage(`(${speakingMember.name}) ${blockReason}`, 'system-error');
             } else { appendChatMessage(`(${speakingMember.name}からの応答なし)`, 'system-error'); }
-        } catch (error) { appendChatMessage(`(${speakingMember.name}の通信エラー)`, 'system-error'); }
+        } catch (error) { console.error(`Fetch/Network Error (Group - ${speakingMember.name}):`, error); removeThinkingMessage(); appendChatMessage(`(${speakingMember.name}の通信エラー)`, 'system-error'); }
     }
 
     function popLastUserMessageFromHistoryOnError() {
-        if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === "user") {
+        if (currentChatType === 'personal' && conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === "user") {
             conversationHistory.pop();
         }
-        saveConversationHistory(); // 変更を保存
+        saveConversationHistory();
     }
     function toggleInputDisabled(isDisabled) {
         userInputField.disabled = isDisabled;
         sendButton.disabled = isDisabled;
     }
-    function appendChatMessage(text, sender, memberData = null) {
+    function appendChatMessage(text, sender, memberData = null) { // memberData は個人チャットまたはグループ内の発言者
         const chatLogDiv = document.getElementById('chat-log');
         const messageGroup = document.createElement('div');
         messageGroup.classList.add('message-group', sender);
@@ -642,8 +719,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="message-text"><span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></div>
                     </div>
                 </div>`;
-        } else if (sender === 'system-message' || sender === 'system-error') { // system-messageもエラーと同じスタイルで
-            messageGroup.classList.add('system-error'); // スタイル流用
+        } else if (sender === 'system-message' || sender === 'system-error') {
+            messageGroup.classList.add('system-error');
             messageGroup.innerHTML = `<div class="message-bubble system-error-bubble">${sanitizedText}</div>`;
         }
         chatLogDiv.appendChild(messageGroup);
