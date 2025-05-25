@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#f8f8f8"> <!-- 基本の背景色 -->
+    <meta name="theme-color" content="#f8f8f8">
 </head>
 <body>
     <div id="app-container">
@@ -28,11 +28,11 @@
         <!-- 画面2: トークルーム -->
         <section id="chat-room-screen" class="screen">
             <header class="screen-header chat-room-header">
-                <button id="back-to-list-btn" class="header-btn"><img src="assets/icons/back_arrow.png" alt="戻る"></button>
+                <button id="back-to-list-btn" class="header-btn"><img src="images/icons/back_arrow.png" alt="戻る"></button>
                 <h1 id="chat-member-name"></h1>
                 <div class="chat-header-actions">
-                    <button id="new-talk-btn" class="header-btn"><img src="assets/icons/menu_edit_square.png" alt="新規トーク"></button>
-                    <button id="member-settings-btn" class="header-btn"><img src="assets/icons/menu_hamburger.png" alt="設定"></button>
+                    <button id="new-talk-btn" class="header-btn"><img src="images/icons/menu_edit_square.png" alt="新規トーク"></button>
+                    <button id="member-settings-btn" class="header-btn"><img src="images/icons/menu_hamburger.png" alt="設定"></button>
                 </div>
             </header>
             <main class="screen-content chat-log-container">
@@ -54,7 +54,7 @@
         <!-- 画面3: メンバー設定 -->
         <section id="member-settings-screen" class="screen">
             <header class="screen-header member-settings-header">
-                <button id="back-to-chat-btn" class="header-btn"><img src="assets/icons/back_arrow.png" alt="戻る"></button>
+                <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/back_arrow.png" alt="戻る"></button>
                 <h1 id="settings-member-name"></h1>
             </header>
             <main class="screen-content settings-content">
@@ -113,18 +113,18 @@
         <!-- フッターナビゲーション -->
         <nav id="footer-nav">
             <button class="nav-item active" data-screen="member-list-screen">
-                <img src="assets/icons/nav_talk_on.png" alt="トーク" class="nav-icon-on">
-                <img src="assets/icons/nav_talk_off.png" alt="トーク" class="nav-icon-off" style="display:none;">
+                <img src="images/icons/nav_talk_on.png" alt="トーク" class="nav-icon-on">
+                <img src="images/icons/nav_talk_off.png" alt="トーク" class="nav-icon-off" style="display:none;">
                 <span>トーク</span>
             </button>
             <button class="nav-item" data-screen="common-settings-screen">
-                <img src="assets/icons/nav_settings_off.png" alt="共通設定" class="nav-icon-off">
-                <img src="assets/icons/nav_settings_on.png" alt="共通設定" class="nav-icon-on" style="display:none;">
+                <img src="images/icons/nav_settings_off.png" alt="共通設定" class="nav-icon-off">
+                <img src="images/icons/nav_settings_on.png" alt="共通設定" class="nav-icon-on" style="display:none;">
                 <span>共通設定</span>
             </button>
             <button class="nav-item" data-screen="user-profile-screen">
-                <img src="assets/icons/nav_profile_off.png" alt="プロフィール" class="nav-icon-off">
-                <img src="assets/icons/nav_profile_on.png" alt="プロフィール" class="nav-icon-on" style="display:none;">
+                <img src="images/icons/nav_profile_off.png" alt="プロフィール" class="nav-icon-off">
+                <img src="images/icons/nav_profile_on.png" alt="プロフィール" class="nav-icon-on" style="display:none;">
                 <span>プロフィール</span>
             </button>
         </nav>
