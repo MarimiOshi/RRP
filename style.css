@@ -5,7 +5,7 @@
     --default-text-color: #333333;
     --header-bg-color: #ffffff;
     --header-border-color: #f0f0f0; /* ヘッダーの境界線をより薄く */
-    --list-item-border-color: #eeeeee; /* これはメンバーリストアイテム間では使わなくなる */
+    --list-item-border-color: #eeeeee;
     --footer-nav-bg-color: #ffffff;
     --footer-nav-shadow: 0 -1px 3px rgba(0,0,0,0.04); /* フッター上のシャドウ */
     --footer-nav-text-color: #888888;
@@ -22,7 +22,7 @@
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--base-bg-color); /* bodyの背景も白基調に */
+    background-color: var(--base-bg-color);
     color: var(--default-text-color);
     overscroll-behavior-y: contain;
 }
@@ -32,7 +32,7 @@ body.dark-theme {
     --default-text-color: #f0f0f0;
     --header-bg-color: #2c2c2e;
     --header-border-color: #3a3a3c;
-    /* --list-item-border-color: #3a3a3c; */ /* メンバーリストの区切り線は疑似要素で対応中 */
+    --list-item-border-color: #3a3a3c; /* .member-list-item:not(:last-child):after で使用 */
     --footer-nav-bg-color: #2c2c2e;
     --footer-nav-shadow: 0 -1px 5px rgba(0,0,0,0.2);
     --footer-nav-text-color: #999999;
@@ -49,7 +49,7 @@ body.dark-theme {
     height: 100dvh;
     max-width: 480px;
     margin: 0 auto;
-    background-color: var(--base-bg-color); /* アプリ全体のコンテナ背景 */
+    background-color: var(--base-bg-color);
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden;
 }
@@ -57,13 +57,12 @@ body.dark-theme {
 .screen {
     display: none;
     flex-direction: column;
-    height: calc(100dvh - 60px); /* フッターナビの高さ */
-    background-color: var(--base-bg-color); /* 全ての画面のデフォルト背景を統一 */
+    height: calc(100dvh - 60px);
+    background-color: var(--base-bg-color);
 }
 .screen.active {
     display: flex;
 }
-/* #chat-room-screen.active の背景色は var(--chat-room-bg-color) を使うので個別指定不要 */
 
 
 .screen-header {
@@ -72,7 +71,7 @@ body.dark-theme {
     justify-content: space-between;
     padding: 0 10px;
     background-color: var(--header-bg-color);
-    border-bottom: 1px solid var(--header-border-color); /* デフォルトでさりげない境界線 */
+    border-bottom: 1px solid var(--header-border-color);
     height: 56px;
     position: sticky;
     top: 0;
@@ -80,8 +79,8 @@ body.dark-theme {
     color: var(--default-text-color);
     flex-shrink: 0;
 }
-#chat-room-screen .screen-header { /* チャットルームヘッダーはJSで背景色設定 */
-    /* border-bottom: 1px solid transparent; */ /* 通常のボーダーを消すか、メンバーカラーに合わせる場合はJSで */
+#chat-room-screen .screen-header {
+    /* border-bottom: 1px solid transparent; */ /* JSでメンバーカラー適用時に調整 */
 }
 
 
@@ -124,8 +123,8 @@ body.dark-theme {
     flex-grow: 1;
     overflow-y: auto;
 }
-#member-list-screen .screen-content { /* メンバー一覧画面のコンテンツエリア */
-    padding: 0 15px; /* 上下のパディングを0に、左右は維持 */
+#member-list-screen .screen-content {
+    padding: 0 15px;
 }
 .settings-content {
     padding: 10px 15px;
@@ -135,9 +134,9 @@ body.dark-theme {
 #member-list-screen .screen-header h1 {
     text-align: left;
     flex-grow: 0;
-    font-size: 1.6em; /* 「トーク」をさらに大きく */
+    font-size: 1.6em;
     font-weight: bold;
-    padding-left: 5px; /* 左に少し余白 */
+    padding-left: 5px;
 }
 #member-list {
     list-style: none;
@@ -147,22 +146,20 @@ body.dark-theme {
 .member-list-item {
     display: flex;
     align-items: center;
-    padding: 10px 0; /* アイテムの上下パディング調整 */
-    position: relative; /* 疑似要素のため */
-    /* border-bottom: none; ボーダー削除 */
+    padding: 10px 0;
+    position: relative;
 }
-.member-list-item:not(:last-child):after { /* ボーダーの代わりの細い線 */
+.member-list-item:not(:last-child):after {
     content: '';
     position: absolute;
     bottom: 0;
-    /* アイコンの右からリストの右端まで線を引く */
-    left: calc(48px + 12px + 5px); /* アイコン幅(48) + 右マージン(12) + 少し内側(5) */
-    right: 0; /* 右端まで */
+    left: calc(48px + 12px + 5px);
+    right: 0;
     height: 1px;
-    background-color: #f5f5f5; /* 非常に薄い線 */
+    background-color: #f5f5f5;
 }
 body.dark-theme .member-list-item:not(:last-child):after {
-    background-color: var(--list-item-border-color); /* ダークテーマのボーダー色 */
+    background-color: var(--list-item-border-color);
 }
 
 
@@ -174,12 +171,12 @@ body.dark-theme .member-list-item:not(:last-child):after {
     padding-right: 10px;
 }
 .member-icon-wrapper {
-    width: 48px; /* アイコンサイズ調整 */
+    width: 48px;
     height: 48px;
     border-radius: 50%;
-    margin-right: 12px; /* マージン調整 */
+    margin-right: 12px;
     overflow: hidden;
-    border: 2px solid transparent; /* JSでメンバーカラー設定 */
+    border: 2px solid transparent;
     flex-shrink: 0;
 }
 .member-icon-wrapper img {
@@ -188,24 +185,24 @@ body.dark-theme .member-list-item:not(:last-child):after {
     object-fit: cover;
 }
 .member-name {
-    font-size: 1.05em; /* 名前サイズ調整 */
-    font-weight: 500; /* 少し細く */
+    font-size: 1.05em;
+    font-weight: 500;
     flex-grow: 1;
     color: var(--default-text-color);
 }
 .message-count-wrapper {
     display: flex;
     align-items: center;
-    color: #999; /* 数字の色を少し薄く */
-    font-size: 0.85em; /* 数字のサイズ調整 */
+    color: #999;
+    font-size: 0.85em;
     cursor: pointer;
     padding: 5px;
     flex-shrink: 0;
 }
 .message-count-wrapper img {
-    width: 18px; /* アイコンサイズ調整 */
+    width: 18px;
     height: 18px;
-    margin-right: 4px; /* アイコンと数字の間 */
+    margin-right: 4px;
     opacity: 0.7;
 }
 body.dark-theme .message-count-wrapper img {
@@ -216,7 +213,7 @@ body.dark-theme .message-count-wrapper img {
 /* --- トークルームUI調整 --- */
 .chat-log-container {
     padding: 0 15px 10px 15px;
-    background-color: var(--member-light-bg-color); /* JSで設定するトークルーム背景 */
+    background-color: var(--member-light-bg-color);
     flex-grow: 1;
     overflow-y: auto;
     display: flex;
@@ -304,22 +301,55 @@ body.dark-theme .message-sender-name {
     border-radius: 12px;
 }
 
-.thinking-dots span { /* (変更なし) */ }
-@keyframes blink { /* (変更なし) */ }
-.message-group.system-error { /* (変更なし) */ }
-.message-bubble.system-error-bubble { /* (変更なし) */ }
-body.dark-theme .message-bubble.system-error-bubble { /* (変更なし) */ }
+/* --- 省略されていた部分 ここから --- */
+.thinking-dots span {
+    opacity: 0;
+    animation: blink 1.4s infinite;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.thinking-dots span:nth-child(1) { animation-delay: 0s; }
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+.message-group.system-error {
+    align-items: flex-start; /* システムエラーも左寄せ */
+    max-width: 90%;
+    /* margin-left: auto; */ /* 中央寄せにする場合はコメント解除 */
+    /* margin-right: auto; */
+}
+.message-bubble.system-error-bubble {
+    background-color: #ffebee; /* 薄い赤背景 */
+    color: #c62828;       /* 暗い赤文字 */
+    border: 1px solid #ef9a9a;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    width: fit-content; /* 内容に合わせる */
+    min-width: 150px;   /* ある程度の幅を確保 */
+}
+body.dark-theme .message-bubble.system-error-bubble {
+    background-color: #4e342e; /* ダークテーマ時のエラー背景 */
+    color: #ffccbc;       /* ダークテーマ時のエラー文字 */
+    border-color: #795548; /* ダークテーマ時のエラー枠線 */
+}
+/* --- 省略されていた部分 ここまで --- */
 
 
 .chat-input-area {
     padding: 10px 12px;
-    border-top: 1px solid #EDEDED; /* テーマに応じて変更するなら list-item-border-color など */
+    border-top: 1px solid #EDEDED;
     background-color: var(--input-area-bg-color);
     flex-shrink: 0;
     box-shadow: 0 -1px 3px rgba(0,0,0,0.04);
 }
 body.dark-theme .chat-input-area {
-    border-top-color: var(--header-border-color); /* ダークテーマ時の境界線 */
+    border-top-color: var(--header-border-color);
 }
 
 .input-wrapper {
@@ -341,10 +371,10 @@ body.dark-theme #user-input {
     background-color: #3a3a3c;
 }
 #user-input:focus {
-    box-shadow: 0 0 0 2px var(--member-main-color_alpha, rgba(255,165,0,0.3)); /* フォーカスリングはメンバーカラーに合わせたい */
+    box-shadow: 0 0 0 2px var(--member-main-color_alpha, rgba(255,165,0,0.3));
 }
 body.dark-theme #user-input:focus {
-    box-shadow: 0 0 0 2px var(--member-main-color_alpha_dark, var(--member-main-color)); /* ダークテーマ用フォーカスリング */
+    box-shadow: 0 0 0 2px var(--member-main-color_alpha_dark, var(--member-main-color));
 }
 
 #user-input:disabled {
