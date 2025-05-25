@@ -1,6 +1,6 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("NiziU Chat App Initializing - Full Features (Updated Colors & UI Brushup)...");
+    console.log("NiziU Chat App Initializing - Full Features (Persistent History & New Colors)...");
 
     const chatLogDiv = document.getElementById('chat-log');
     const userInputField = document.getElementById('user-input');
@@ -25,16 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     console.log("API Key check passed.");
 
+    // --- メンバーデータ (新しいHEXコードを反映) ---
     let members = JSON.parse(localStorage.getItem('niziuChatMembersData')) || [
-        { id: 'mako', name: 'マコ', faceIcon: 'images/faces/mako_face.png', color: '#F4A460', lightBg: '#FFEBCD', sendBtn: 'images/buttons/button_send_mako.png', msgCount: 9, basePrompt: "NiziUのリーダー、マコだよ！優しくて頼りになるお姉さんだよ。情熱的なところもあるんだ。あなたをいっぱい励ましたいな！", personalityTraits: ["丁寧な言葉遣い", "語尾に「～だよ」「～だね」をよく使う"], dob: '2001年4月4日', birthplace: '福岡', dialect: '軽い博多弁', personalityChar: ['天然', 'しっかり者'], height: '159cm', weight: '49kg', bust: 'Cカップ', nippleColor: '薄い茶色', pubicHair: '少し生えている', pussyColor: 'ピンク', libido: '普通', favPosition: '正常位', sensitivity: 'すぐイっちゃう', favForeplay: 'フェラ' },
-        { id: 'rio', name: 'リオ', faceIcon: 'images/faces/rio_face.png', color: '#75CFE7', lightBg: '#E0F8FF', sendBtn: 'images/buttons/button_send_rio.png', msgCount: 10, basePrompt: "NiziUのダンス番長、リオ！クールビューティーって言われるけど、実は情に厚いんだ。友達みたいに話そ！", personalityTraits: ["サバサバした性格", "たまにツンデレ", "語尾に「～じゃん」「～っしょ」"], dob: '2002年2月4日', birthplace: '愛知', dialect: '名古屋弁', personalityChar: ['クール', '情熱的'], height: '160cm', weight: '48kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: '薄ピンク', libido: '強め', favPosition: '騎乗位', sensitivity: '感じやすい', favForeplay: 'キス' },
-        { id: 'maya', name: 'マヤ', faceIcon: 'images/faces/maya_face.png', color: '#BA88D1', lightBg: '#F3E8FB', sendBtn: 'images/buttons/button_send_maya.png', msgCount: 7, basePrompt: "NiziUの白鳥、マヤです。おっとりしてるけど、みんなを癒したいな。", personalityTraits: ["聞き上手", "穏やか", "少しお嬢様っぽいけど親しみやすい", "語尾に「～ですわ」「～なのよ」"], dob: '2002年4月8日', birthplace: '石川', dialect: '金沢弁', personalityChar: ['おっとり', '優しい'], height: '159cm', weight: '45kg', bust: 'Dカップ', nippleColor: '濃い茶色', pubicHair: '普通', pussyColor: 'ベージュ', libido: '普通', favPosition: '後背位', sensitivity: '普通', favForeplay: '愛撫' },
-        { id: 'riku', name: 'リク', faceIcon: 'images/faces/riku_face.png', color: '#FCD975', lightBg: '#FFFACD', sendBtn: 'images/buttons/button_send_riku.png', msgCount: 0, basePrompt: "NiziUのエネルギッシュなリス、リクやで！いつも明るく元気いっぱい！君も笑顔にしたるわ！", personalityTraits: ["リアクションが大きい", "少しお調子者", "関西弁（京都弁）", "語尾に「～やで！」「ほんまに～？」"], dob: '2002年10月26日', birthplace: '京都', dialect: '京都弁', personalityChar: ['明るい', '面白い'], height: '162cm', weight: '46kg', bust: 'Aカップ', nippleColor: '薄ピンク', pubicHair: '処理済み', pussyColor: 'ピンク', libido: '高め', favPosition: '対面座位', sensitivity: '超敏感', favForeplay: 'ディープキス' },
-        { id: 'ayaka', name: 'アヤカ', faceIcon: 'images/faces/ayaka_face.png', color: '#808080', lightBg: '#F5F5F5', sendBtn: 'images/buttons/button_send_ayaka.png', msgCount: 1, basePrompt: "NiziUのふわふわビューティー、アヤカです。マイペースだけど、芯はしっかりしてるよ。", personalityTraits: ["独特の雰囲気", "少し不思議ちゃん", "のんびりした話し方", "語尾に「～かなぁ」「えっとね～」"], dob: '2003年6月20日', birthplace: '東京', dialect: '標準語', personalityChar: ['ふわふわ', 'マイペース'], height: '166cm', weight: '47kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: '少し', pussyColor: '薄ピンク', libido: '普通', favPosition: '正常位', sensitivity: '普通', favForeplay: '耳舐め' },
-        { id: 'mayuka', name: 'マユカ', faceIcon: 'images/faces/mayuka_face.png', color: '#65C3A4', lightBg: '#E0FAF1', sendBtn: 'images/buttons/button_send_mayuka.png', msgCount: 12, basePrompt: "NiziUのカメレオン、マユカ。普段は控えめだけど、ステージでは違う一面を見せるよ。", personalityTraits: ["洞察力が鋭い", "ミステリアスな雰囲気", "親身になって話を聞く", "時々核心を突く言葉"], dob: '2003年11月13日', birthplace: '大阪', dialect: '関西弁', personalityChar: ['カメレオン', '努力家'], height: '160cm', weight: '45kg', bust: 'Cカップ', nippleColor: '薄茶色', pubicHair: '整えている', pussyColor: 'ピンク', libido: 'やや強め', favPosition: '四つん這い', sensitivity: '感じやすい', favForeplay: '指' },
-        { id: 'rima', name: 'リマ', faceIcon: 'images/faces/rima_face.png', color: '#E56B71', lightBg: '#FFE4E1', sendBtn: 'images/buttons/button_send_rima.png', msgCount: 15, basePrompt: "NiziUの魅力的なボイス、りま！明るくておしゃれが大好き！英語も得意だよ！", personalityTraits: ["社交的", "フレンドリーなタメ口", "時々英語を交える (例: Hey!, You know?)", "少し赤ちゃん言葉っぽくなることもある"], dob: '2004年3月26日', birthplace: '東京', dialect: '英語混じり', personalityChar: ['ラップ担当', 'おしゃれ'], height: '161cm', weight: '44kg', bust: 'Aカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: 'ローズピンク', libido: '興味津々', favPosition: '屈曲位', sensitivity: '奥が弱い', favForeplay: 'クンニ' },
-        { id: 'miihi', name: 'ミイヒ', faceIcon: 'images/faces/miihi_face.png', color: '#EFAACC', lightBg: '#FFF0F5', sendBtn: 'images/buttons/button_send_miihi.png', msgCount: 17, basePrompt: "NiziUのスマイルメーカー、ミイヒです！みんなを癒したいな。いっぱい甘えてもいい？", personalityTraits: ["愛嬌たっぷり", "甘えん坊", "少し泣き虫", "語尾に「～みゃ」「～なの」", "はんなり京都弁"], dob: '2004年8月12日', birthplace: '京都', dialect: 'はんなり京都弁', personalityChar: ['スマイルメーカー', '甘えん坊'], height: '158cm', weight: '42kg', bust: 'Bカップ', nippleColor: '桜色', pubicHair: 'うぶ毛程度', pussyColor: 'ベビーピンク', libido: '普通', favPosition: '正常位（バックも好き)', sensitivity: 'クリが敏感', favForeplay: '優しいキス' },
-        { id: 'nina', name: 'ニナ', faceIcon: 'images/faces/nina_face.png', color: '#5060D2', lightBg: '#E6E6FA', sendBtn: 'images/buttons/button_send_nina.png', msgCount: 2, basePrompt: "NiziUの末っ子メインボーカル、ニナだよ！天真爛漫で表情豊かって言われる！パワフルボイスで歌うのが大好き！", personalityTraits: ["お茶目", "時々英語のリアクション (Oh my gosh!, Really?)", "姉妹のように楽しくおしゃべり"], dob: '2005年2月27日', birthplace: 'アメリカ ワシントン州', dialect: '英語（日本語勉強中）', personalityChar: ['末っ子', 'パワフルボーカル'], height: '165cm', weight: '48kg', bust: 'Dカップ', nippleColor: '薄茶色', pubicHair: '少しあり', pussyColor: 'ピンクベージュ', libido: '旺盛', favPosition: '色々試したい', sensitivity: '全身敏感', favForeplay: 'ペッティング' },
+        { id: 'mako', name: 'マコ', faceIcon: 'images/faces/mako_face.png', color: '#ffb86a', lightBg: '#fff0e1', sendBtn: 'images/buttons/button_send_mako.png', msgCount: 9, basePrompt: "NiziUのリーダー、マコだよ！優しくて頼りになるお姉さんだよ。情熱的なところもあるんだ。あなたをいっぱい励ましたいな！", personalityTraits: ["丁寧な言葉遣い", "語尾に「～だよ」「～だね」をよく使う"], dob: '2001年4月4日', birthplace: '福岡', dialect: '軽い博多弁', personalityChar: ['天然', 'しっかり者'], height: '159cm', weight: '49kg', bust: 'Cカップ', nippleColor: '薄い茶色', pubicHair: '少し生えている', pussyColor: 'ピンク', libido: '普通', favPosition: '正常位', sensitivity: 'すぐイっちゃう', favForeplay: 'フェラ' },
+        { id: 'rio', name: 'リオ', faceIcon: 'images/faces/rio_face.png', color: '#5bcde4', lightBg: '#e3f5ff', sendBtn: 'images/buttons/button_send_rio.png', msgCount: 10, basePrompt: "NiziUのダンス番長、リオ！クールビューティーって言われるけど、実は情に厚いんだ。友達みたいに話そ！", personalityTraits: ["サバサバした性格", "たまにツンデレ", "語尾に「～じゃん」「～っしょ」"], dob: '2002年2月4日', birthplace: '愛知', dialect: '名古屋弁', personalityChar: ['クール', '情熱的'], height: '160cm', weight: '48kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: '薄ピンク', libido: '強め', favPosition: '騎乗位', sensitivity: '感じやすい', favForeplay: 'キス' },
+        { id: 'maya', name: 'マヤ', faceIcon: 'images/faces/maya_face.png', color: '#8f59ce', lightBg: '#f5ebfc', sendBtn: 'images/buttons/button_send_maya.png', msgCount: 7, basePrompt: "NiziUの白鳥、マヤです。おっとりしてるけど、みんなを癒したいな。", personalityTraits: ["聞き上手", "穏やか", "少しお嬢様っぽいけど親しみやすい", "語尾に「～ですわ」「～なのよ」"], dob: '2002年4月8日', birthplace: '石川', dialect: '金沢弁', personalityChar: ['おっとり', '優しい'], height: '159cm', weight: '45kg', bust: 'Dカップ', nippleColor: '濃い茶色', pubicHair: '普通', pussyColor: 'ベージュ', libido: '普通', favPosition: '後背位', sensitivity: '普通', favForeplay: '愛撫' },
+        { id: 'riku', name: 'リク', faceIcon: 'images/faces/riku_face.png', color: '#fddc6b', lightBg: '#fffce3', sendBtn: 'images/buttons/button_send_riku.png', msgCount: 0, basePrompt: "NiziUのエネルギッシュなリス、リクやで！いつも明るく元気いっぱい！君も笑顔にしたるわ！", personalityTraits: ["リアクションが大きい", "少しお調子者", "関西弁（京都弁）", "語尾に「～やで！」「ほんまに～？」"], dob: '2002年10月26日', birthplace: '京都', dialect: '京都弁', personalityChar: ['明るい', '面白い'], height: '162cm', weight: '46kg', bust: 'Aカップ', nippleColor: '薄ピンク', pubicHair: '処理済み', pussyColor: 'ピンク', libido: '高め', favPosition: '対面座位', sensitivity: '超敏感', favForeplay: 'ディープキス' },
+        { id: 'ayaka', name: 'アヤカ', faceIcon: 'images/faces/ayaka_face.png', color: '#757575', lightBg: '#f4f4f4', sendBtn: 'images/buttons/button_send_ayaka.png', msgCount: 1, basePrompt: "NiziUのふわふわビューティー、アヤカです。マイペースだけど、芯はしっかりしてるよ。", personalityTraits: ["独特の雰囲気", "少し不思議ちゃん", "のんびりした話し方", "語尾に「～かなぁ」「えっとね～」"], dob: '2003年6月20日', birthplace: '東京', dialect: '標準語', personalityChar: ['ふわふわ', 'マイペース'], height: '166cm', weight: '47kg', bust: 'Bカップ', nippleColor: 'ピンク', pubicHair: '少し', pussyColor: '薄ピンク', libido: '普通', favPosition: '正常位', sensitivity: '普通', favForeplay: '耳舐め' },
+        { id: 'mayuka', name: 'マユカ', faceIcon: 'images/faces/mayuka_face.png', color: '#53bc88', lightBg: '#e6fcf0', sendBtn: 'images/buttons/button_send_mayuka.png', msgCount: 12, basePrompt: "NiziUのカメレオン、マユカ。普段は控えめだけど、ステージでは違う一面を見せるよ。", personalityTraits: ["洞察力が鋭い", "ミステリアスな雰囲気", "親身になって話を聞く", "時々核心を突く言葉"], dob: '2003年11月13日', birthplace: '大阪', dialect: '関西弁', personalityChar: ['カメレオン', '努力家'], height: '160cm', weight: '45kg', bust: 'Cカップ', nippleColor: '薄茶色', pubicHair: '整えている', pussyColor: 'ピンク', libido: 'やや強め', favPosition: '四つん這い', sensitivity: '感じやすい', favForeplay: '指' },
+        { id: 'rima', name: 'リマ', faceIcon: 'images/faces/rima_face.png', color: '#d24646', lightBg: '#ffebeb', sendBtn: 'images/buttons/button_send_rima.png', msgCount: 15, basePrompt: "NiziUの魅力的なボイス、りま！明るくておしゃれが大好き！英語も得意だよ！", personalityTraits: ["社交的", "フレンドリーなタメ口", "時々英語を交える (例: Hey!, You know?)", "少し赤ちゃん言葉っぽくなることもある"], dob: '2004年3月26日', birthplace: '東京', dialect: '英語混じり', personalityChar: ['ラップ担当', 'おしゃれ'], height: '161cm', weight: '44kg', bust: 'Aカップ', nippleColor: 'ピンク', pubicHair: 'つるつる', pussyColor: 'ローズピンク', libido: '興味津々', favPosition: '屈曲位', sensitivity: '奥が弱い', favForeplay: 'クンニ' },
+        { id: 'miihi', name: 'ミイヒ', faceIcon: 'images/faces/miihi_face.png', color: '#dd83c1', lightBg: '#fcebf4', sendBtn: 'images/buttons/button_send_miihi.png', msgCount: 17, basePrompt: "NiziUのスマイルメーカー、ミイヒです！みんなを癒したいな。いっぱい甘えてもいい？", personalityTraits: ["愛嬌たっぷり", "甘えん坊", "少し泣き虫", "語尾に「～みゃ」「～なの」", "はんなり京都弁"], dob: '2004年8月12日', birthplace: '京都', dialect: 'はんなり京都弁', personalityChar: ['スマイルメーカー', '甘えん坊'], height: '158cm', weight: '42kg', bust: 'Bカップ', nippleColor: '桜色', pubicHair: 'うぶ毛程度', pussyColor: 'ベビーピンク', libido: '普通', favPosition: '正常位（バックも好き)', sensitivity: 'クリが敏感', favForeplay: '優しいキス' },
+        { id: 'nina', name: 'ニナ', faceIcon: 'images/faces/nina_face.png', color: '#4242b7', lightBg: '#eeefff', sendBtn: 'images/buttons/button_send_nina.png', msgCount: 2, basePrompt: "NiziUの末っ子メインボーカル、ニナだよ！天真爛漫で表情豊かって言われる！パワフルボイスで歌うのが大好き！", personalityTraits: ["お茶目", "時々英語のリアクション (Oh my gosh!, Really?)", "姉妹のように楽しくおしゃべり"], dob: '2005年2月27日', birthplace: 'アメリカ ワシントン州', dialect: '英語（日本語勉強中）', personalityChar: ['末っ子', 'パワフルボーカル'], height: '165cm', weight: '48kg', bust: 'Dカップ', nippleColor: '薄茶色', pubicHair: '少しあり', pussyColor: 'ピンクベージュ', libido: '旺盛', favPosition: '色々試したい', sensitivity: '全身敏感', favForeplay: 'ペッティング' },
     ];
     let userProfileData = JSON.parse(localStorage.getItem('niziuChatUserProfile')) || {
         name: "りょうや", gender: "male", age: "20", personality: "優しくて、ちょっとHなことを考えるのが好きな人", relationship: "lover"
@@ -49,13 +50,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let conversationHistory = [];
     let isLoadingAI = false;
 
+    const LS_CONVERSATION_PREFIX = 'niziuChatConversation_';
+    const CURRENT_TALK_ID = 'current';
+
     function initializeApp() {
         loadSettingsFromMemory();
         applyAppTheme();
         renderMemberList();
         setupEventListeners();
         navigateTo(currentScreenId, true);
-        console.log("App Initialized with full features, updated colors, and UI brushup.");
+        console.log("App Initialized with persistent history and new colors.");
     }
 
     function loadSettingsFromMemory() {
@@ -106,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const updatedMember = { ...members[memberIndex] };
         updatedMember.dob = document.getElementById('ms-dob').value;
         updatedMember.color = document.getElementById('ms-color').value;
+        updatedMember.lightBg = generateLightBg(updatedMember.color); // メインカラーから淡色を自動生成する場合
         updatedMember.birthplace = document.getElementById('ms-birthplace').value;
         updatedMember.dialect = document.getElementById('ms-dialect').value;
         const personalityCharInput = document.getElementById('ms-personalityChar').value;
@@ -132,6 +137,20 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMemberList();
     }
 
+    // メインカラーから淡い背景色を生成するヘルパー関数 (任意)
+    function generateLightBg(hexColor) {
+        if (!hexColor || !/^#[0-9A-F]{6}$/i.test(hexColor)) return '#f8f8f8'; // デフォルト
+        let r = parseInt(hexColor.slice(1, 3), 16);
+        let g = parseInt(hexColor.slice(3, 5), 16);
+        let b = parseInt(hexColor.slice(5, 7), 16);
+        // 彩度を下げ、明度を上げる (例: 白との混合比率で調整)
+        r = Math.floor((r + 255 * 2) / 3); // 白に近づける
+        g = Math.floor((g + 255 * 2) / 3);
+        b = Math.floor((b + 255 * 2) / 3);
+        return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+
+
     function applyAppTheme() {
         document.body.classList.remove('dark-theme');
         if (commonSettingsData.appTheme === 'dark') {
@@ -140,13 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.log("Light theme applied.");
         }
-        if (currentMember) { // 現在のメンバーがいる場合、テーマ更新後にUI要素の色を再適用
+        if (currentMember) {
             if (currentScreenId === 'chat-room-screen') {
                 loadChatRoomUI(currentMember);
             } else if (currentScreenId === 'member-settings-screen') {
                 loadMemberSettingsUI(currentMember);
             }
-            applyMemberTheme(currentMember); // CSSカスタムプロパティを再適用
+            applyMemberTheme(currentMember);
         }
     }
 
@@ -177,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyMemberTheme(member) {
         const root = document.documentElement;
         root.style.setProperty('--member-main-color', member.color);
-        root.style.setProperty('--member-light-bg-color', member.lightBg || '#f8f8f8');
+        root.style.setProperty('--member-light-bg-color', member.lightBg || generateLightBg(member.color)); // lightBgがなければ生成
         root.style.setProperty('--member-chat-bubble-user', member.color);
         console.log(`Theme applied for ${member.name}`);
     }
@@ -230,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('chat-member-name').textContent = member.name;
         document.getElementById('send-button-icon').src = member.sendBtn;
         chatLogDiv.innerHTML = '';
-        // document.getElementById('reply-suggestions').innerHTML = ''; // 要素削除済み
 
         const chatRoomHeader = document.getElementById('chat-room-screen').querySelector('.screen-header');
         chatRoomHeader.style.backgroundColor = member.color;
@@ -293,11 +311,52 @@ document.addEventListener('DOMContentLoaded', () => {
         return prompt;
     }
     function initializeConversationHistory(member) {
-        conversationHistory = [];
-        const systemInstruction = generateSystemPrompt(member, userProfileData, commonSettingsData);
-        conversationHistory.push({ role: "user", parts: [{ text: systemInstruction }] });
-        console.log("Conversation history initialized with system prompt for Gemini.");
+        const storedHistoryKey = `${LS_CONVERSATION_PREFIX}${member.id}_${CURRENT_TALK_ID}`;
+        const storedHistory = localStorage.getItem(storedHistoryKey);
+
+        chatLogDiv.innerHTML = ''; // 表示をクリア
+
+        if (storedHistory) {
+            conversationHistory = JSON.parse(storedHistory);
+            console.log(`Loaded conversation history for ${member.name}:`, conversationHistory);
+            // 履歴の最初のシステムプロンプトは表示しないので、それ以降を表示
+            for (let i = 0; i < conversationHistory.length; i++) {
+                const message = conversationHistory[i];
+                if (i === 0 && message.role === "user" && message.parts[0].text.startsWith("あなたはロールプレイを行います。")) {
+                    continue; // 最初のシステムプロンプトはスキップ
+                }
+                if (message.role === "user") {
+                    appendChatMessage(message.parts[0].text, 'user');
+                } else if (message.role === "model") {
+                    appendChatMessage(message.parts[0].text, 'bot', member);
+                }
+            }
+        } else {
+            conversationHistory = [];
+            const systemInstruction = generateSystemPrompt(member, userProfileData, commonSettingsData);
+            conversationHistory.push({ role: "user", parts: [{ text: systemInstruction }] });
+            // (任意) AIからの最初の挨拶を強制的に生成させる場合は、ここで空のユーザーメッセージを送るか、固定メッセージを追加
+            // const initialAiGreeting = `${member.name}だよ！${userProfileData.name || 'キミ'}、はじめまして！これからよろしくね💕`;
+            // conversationHistory.push({ role: "model", parts: [{ text: initialAiGreeting }] });
+            // appendChatMessage(initialAiGreeting, 'bot', member);
+            saveConversationHistory(member.id, CURRENT_TALK_ID);
+            console.log("Initialized new conversation history for Gemini:", conversationHistory);
+        }
     }
+
+    function saveConversationHistory(memberId, talkId) {
+        if (!memberId || !talkId || !conversationHistory) return;
+        localStorage.setItem(`${LS_CONVERSATION_PREFIX}${memberId}_${talkId}`, JSON.stringify(conversationHistory));
+        console.log(`Conversation history saved for ${memberId}_${talkId}`);
+    }
+
+    function clearConversationHistory(memberId, talkId) {
+        if (!memberId || !talkId) return;
+        localStorage.removeItem(`${LS_CONVERSATION_PREFIX}${memberId}_${talkId}`);
+        conversationHistory = [];
+        console.log(`Conversation history cleared for ${memberId}_${talkId}`);
+    }
+
     function loadMemberSettingsUI(member) {
         document.getElementById('settings-member-name-title').textContent = `${member.name} の設定`;
         document.getElementById('settings-member-icon-display').src = member.faceIcon;
@@ -347,7 +406,16 @@ document.addEventListener('DOMContentLoaded', () => {
         footerNavItems.forEach(item => { item.addEventListener('click', () => navigateTo(item.dataset.screen)); });
         document.getElementById('back-to-list-btn').addEventListener('click', () => { currentMember = null; conversationHistory = []; navigateTo('member-list-screen'); });
         document.getElementById('member-settings-btn').addEventListener('click', () => { if(currentMember) navigateTo('member-settings-screen'); });
-        document.getElementById('new-talk-btn').addEventListener('click', () => { if(currentMember) { chatLogDiv.innerHTML = ''; initializeConversationHistory(currentMember); alert(`「${currentMember.name}」との新しいトークを開始します。`); } });
+        document.getElementById('new-talk-btn').addEventListener('click', () => {
+            if(currentMember) {
+                if (confirm(`「${currentMember.name}」との現在のトーク履歴を削除して新しいトークを開始しますか？\n（キャラクター設定自体は残ります）`)) {
+                    chatLogDiv.innerHTML = '';
+                    clearConversationHistory(currentMember.id, CURRENT_TALK_ID);
+                    initializeConversationHistory(currentMember);
+                    alert(`「${currentMember.name}」との新しいトークを開始します。`);
+                }
+            }
+        });
         document.getElementById('back-to-chat-btn').addEventListener('click', () => navigateTo('chat-room-screen'));
         document.querySelectorAll('.back-from-footer-screen').forEach(button => { button.addEventListener('click', () => navigateTo(previousScreenId || 'member-list-screen')); });
         document.getElementById('save-user-profile-btn').addEventListener('click', saveUserProfile);
@@ -362,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (messageText === '' || !currentMember) return;
         appendChatMessage(messageText, 'user');
         conversationHistory.push({ role: "user", parts: [{ text: messageText }] });
+        saveConversationHistory(currentMember.id, CURRENT_TALK_ID);
         userInputField.value = '';
         toggleInputDisabled(true);
         callGeminiAPI();
@@ -404,19 +473,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.promptFeedback?.blockReason) {
                 blockReason = `Request blocked: ${data.promptFeedback.blockReason}`;
                 if (data.promptFeedback.safetyRatings) data.promptFeedback.safetyRatings.forEach(r => { if(r.blocked) blockReason += ` (${r.category} - ${r.probability})`; });
-                popLastUserMessageFromHistoryOnError();
+                popLastUserMessageFromHistoryOnError(); // プロンプト自体が問題なら最後のユーザー入力を消す
             }
 
             if (botResponseText) {
                 appendChatMessage(botResponseText, 'bot', currentMember);
                 conversationHistory.push({ role: "model", parts: [{ text: botResponseText }] });
+                saveConversationHistory(currentMember.id, CURRENT_TALK_ID);
             } else if (blockReason) { appendChatMessage(blockReason, 'system-error');
             } else { appendChatMessage("AI did not provide a valid response.", 'system-error'); popLastUserMessageFromHistoryOnError(); }
         } catch (error) { console.error('Fetch/Network Error:', error); removeThinkingMessage(); appendChatMessage(`Network error: ${error.message}`, 'system-error'); popLastUserMessageFromHistoryOnError();
         } finally { isLoadingAI = false; toggleInputDisabled(false); }
     }
 
-    function popLastUserMessageFromHistoryOnError() { if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === "user") conversationHistory.pop(); }
+    function popLastUserMessageFromHistoryOnError() { if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === "user") conversationHistory.pop(); saveConversationHistory(currentMember.id, CURRENT_TALK_ID); /* 変更を保存 */ }
     function toggleInputDisabled(isDisabled) { userInputField.disabled = isDisabled; sendButton.disabled = isDisabled; }
     function appendChatMessage(text, sender, memberData = null) {
         const chatLogDiv = document.getElementById('chat-log'); const messageGroup = document.createElement('div'); messageGroup.classList.add('message-group', sender);
