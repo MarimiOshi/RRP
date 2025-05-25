@@ -2,23 +2,132 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>キャラクターチャット</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NiziU Talk</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f8f8f8"> <!-- 基本の背景色 -->
 </head>
 <body>
-    <div id="chat-container">
-        <div id="character-info">
-            <img id="character-icon" src="https://via.placeholder.com/80" alt="Character Icon">
-            <h2 id="character-name">キャラクター名</h2>
-        </div>
-        <div id="chat-log">
-            <!-- チャットメッセージがここに追加されます -->
-        </div>
-        <div id="input-area">
-            <input type="text" id="user-input" placeholder="メッセージを入力...">
-            <button id="send-button">送信</button>
-        </div>
+    <div id="app-container">
+
+        <!-- 画面1: メンバー一覧 (トークリスト) -->
+        <section id="member-list-screen" class="screen active">
+            <header class="screen-header">
+                <h1>トーク</h1>
+            </header>
+            <main class="screen-content">
+                <ul id="member-list">
+                    <!-- メンバーはJavaScriptで動的に追加 -->
+                </ul>
+            </main>
+        </section>
+
+        <!-- 画面2: トークルーム -->
+        <section id="chat-room-screen" class="screen">
+            <header class="screen-header chat-room-header">
+                <button id="back-to-list-btn" class="header-btn"><img src="assets/icons/back_arrow.png" alt="戻る"></button>
+                <h1 id="chat-member-name"></h1>
+                <div class="chat-header-actions">
+                    <button id="new-talk-btn" class="header-btn"><img src="assets/icons/menu_edit_square.png" alt="新規トーク"></button>
+                    <button id="member-settings-btn" class="header-btn"><img src="assets/icons/menu_hamburger.png" alt="設定"></button>
+                </div>
+            </header>
+            <main class="screen-content chat-log-container">
+                <div id="chat-log">
+                    <!-- チャットメッセージがここに追加されます -->
+                </div>
+            </main>
+            <footer class="chat-input-area">
+                <div id="reply-suggestions">
+                    <!-- 返信候補ボタンがここに追加 -->
+                </div>
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="メッセージを入力...">
+                    <button id="send-button"><img id="send-button-icon" src="" alt="送信"></button>
+                </div>
+            </footer>
+        </section>
+
+        <!-- 画面3: メンバー設定 -->
+        <section id="member-settings-screen" class="screen">
+            <header class="screen-header member-settings-header">
+                <button id="back-to-chat-btn" class="header-btn"><img src="assets/icons/back_arrow.png" alt="戻る"></button>
+                <h1 id="settings-member-name"></h1>
+            </header>
+            <main class="screen-content settings-content">
+                <div class="member-profile-icon-area">
+                    <img id="settings-member-icon" src="" alt="メンバーアイコン" class="large-member-icon">
+                </div>
+                <div class="settings-group">
+                    <h3>基本設定</h3>
+                    <ul class="settings-list">
+                        <li><span>生年月日</span><span id="setting-dob" class="setting-value"></span></li>
+                        <li><span>メンバーカラー</span><span id="setting-color" class="setting-value"></span></li>
+                        <li><span>出身</span><span id="setting-birthplace" class="setting-value"></span></li>
+                        <li><span>方言</span><span id="setting-dialect" class="setting-value"></span></li>
+                        <li><span>性格</span><span id="setting-personality" class="setting-value"></span></li>
+                        <li><span>身長</span><span id="setting-height" class="setting-value"></span></li>
+                        <li><span>体重</span><span id="setting-weight" class="setting-value"></span></li>
+                    </ul>
+                </div>
+                <div class="settings-group">
+                    <h3>性的設定</h3>
+                    <ul class="settings-list">
+                        <li><span>胸のサイズ</span><span id="setting-bust" class="setting-value"></span></li>
+                        <li><span>乳首の色</span><span id="setting-nipple-color" class="setting-value"></span></li>
+                        <li><span>陰毛</span><span id="setting-pubic-hair" class="setting-value"></span></li>
+                        <li><span>まんこの色</span><span id="setting-pussy-color" class="setting-value"></span></li>
+                        <li><span>性欲</span><span id="setting-libido" class="setting-value"></span></li>
+                        <li><span>好きな体位</span><span id="setting-fav-position" class="setting-value"></span></li>
+                        <li><span>感度</span><span id="setting-sensitivity" class="setting-value"></span></li>
+                        <li><span>得意な前戯</span><span id="setting-fav-foreplay" class="setting-value"></span></li>
+                    </ul>
+                </div>
+                 <button id="save-settings-btn" class="action-button">設定を保存</button>
+            </main>
+        </section>
+
+        <!-- 画面4: 共通設定 (フッター) -->
+        <section id="common-settings-screen" class="screen">
+            <header class="screen-header">
+                <h1>共通設定</h1>
+            </header>
+            <main class="screen-content">
+                <p>ここは共通設定画面です。</p>
+            </main>
+        </section>
+
+        <!-- 画面5: ユーザープロフィール (フッター) -->
+        <section id="user-profile-screen" class="screen">
+            <header class="screen-header">
+                <h1>プロフィール</h1>
+            </header>
+            <main class="screen-content">
+                <p>ここはユーザープロフィール画面です。</p>
+            </main>
+        </section>
+
+        <!-- フッターナビゲーション -->
+        <nav id="footer-nav">
+            <button class="nav-item active" data-screen="member-list-screen">
+                <img src="assets/icons/nav_talk_on.png" alt="トーク" class="nav-icon-on">
+                <img src="assets/icons/nav_talk_off.png" alt="トーク" class="nav-icon-off" style="display:none;">
+                <span>トーク</span>
+            </button>
+            <button class="nav-item" data-screen="common-settings-screen">
+                <img src="assets/icons/nav_settings_off.png" alt="共通設定" class="nav-icon-off">
+                <img src="assets/icons/nav_settings_on.png" alt="共通設定" class="nav-icon-on" style="display:none;">
+                <span>共通設定</span>
+            </button>
+            <button class="nav-item" data-screen="user-profile-screen">
+                <img src="assets/icons/nav_profile_off.png" alt="プロフィール" class="nav-icon-off">
+                <img src="assets/icons/nav_profile_on.png" alt="プロフィール" class="nav-icon-on" style="display:none;">
+                <span>プロフィール</span>
+            </button>
+        </nav>
     </div>
 
     <script src="config.js"></script>
