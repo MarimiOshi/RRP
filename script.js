@@ -1,255 +1,149 @@
-// Gemini SDKをインポート
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-
-// --- ⚠️ APIキー設定 (重要) ---
-// ここにあなたのGemini APIキーを設定してください。
-// これはデモ用です。本番環境ではサーバーサイドでAPIキーを管理してください。
-const API_KEY = "YOUR_GEMINI_API_KEY"; 
-// ------------------------------
-
-let genAI;
-let model;
-let chatSession; // チャットセッションを保持する変数
-let geminiAvailable = false; // Gemini APIが利用可能かどうかのフラグ
-
-// APIキーが設定されていれば、Gemini AI SDKを初期化
-if (API_KEY && API_KEY !== "YOUR_GEMINI_API_KEY") {
-    try {
-        genAI = new GoogleGenerativeAI(API_KEY);
-        // 使用するモデルを指定 (例: 'gemini-pro', 'gemini-1.5-flash-latest' など)
-        model = genAI.getGenerativeModel({ model: "gemini-pro" }); 
-        geminiAvailable = true;
-        console.log("Gemini AI SDK initialized successfully.");
-    } catch (error) {
-        console.error("Failed to initialize GoogleGenerativeAI or get model:", error);
-        alert("Gemini AI SDKの初期化に失敗しました。APIキーが正しいか、またはモデル名を確認してください。\n詳細はコンソールログを確認してください。");
-    }
-} else {
-    console.warn("API_KEY is not set or is a placeholder in script.js. Gemini API will not be used. Running in dummy mode.");
-}
-
-
-document.addEventListener('DOMContentLoaded', async () => {
+// script.js
+document.addEventListener('DOMContentLoaded', () => {
     const chatLog = document.getElementById('chat-log');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
-    const characterNameDisplay = document.getElementById('character-name');
-    const characterAvatar = document.getElementById('character-avatar');
+    const characterNameElement = document.getElementById('character-name');
+    const characterIconElement = document.getElementById('character-icon');
 
-    // --- キャラクター設定 ---
-    const currentCharacter = {
-        name: "AIアシスタント「ジェマ」",
-        avatar: "https://source.unsplash.com/random/80x80/?robot,cute", // ランダムな可愛いロボット画像
-        systemInstruction: "あなたは「ジェマ」という名前の、親切で少しユーモラスなAIアシスタントです。ユーザーと楽しく会話することを心がけてください。人間らしい自然な言葉遣いをし、時々ジョークを交えることもあります。",
-        // chatHistoryForDisplay: [] // UI表示や永続化のための履歴 (今回は未使用)
+    // --- キャラクター設定 (後で詳細に設定可能) ---
+    let character = {
+        name: "AIアシスタント",
+        icon: "https://via.placeholder.com/80/007bff/ffffff?text=AI", // デフォルトアイコン
+        // systemPrompt: "あなたは親切でフレンドリーなAIアシスタントです。ユーザーの質問に簡潔かつ丁寧に答えてください。"
+        // Gemini APIでは、system promptはcontents配列の最初の要素として設定できます
+        // 例: { role: "user", parts: [{ text: "あなたは「キャラクター名」という名前の「性格」なキャラクターです。以下の制約を守って会話してください：制約１、制約２..." }] }, { role: "model", parts: [{text: "はい、承知いたしました。「キャラクター名」として、あなたとのお話を楽しみにしています！"}] }
+        // のようなやり取りを履歴の最初に入れることで、キャラクター設定を模倣できます。
+        // もしくは、ユーザーの入力の前に毎回固定の指示文を付与します。
+        // 今回はシンプルに、ユーザーの入力のみを送ります。キャラクター設定はAPI呼び出し時に工夫します。
     };
-    // -------------------------
 
-    // キャラクター情報をUIに反映
-    characterNameDisplay.textContent = currentCharacter.name;
-    characterAvatar.src = currentCharacter.avatar;
-    characterAvatar.alt = `${currentCharacter.name} Avatar`;
+    characterNameElement.textContent = character.name;
+    characterIconElement.src = character.icon;
+    // --- ここまでキャラクター設定 ---
 
-    // 初期メッセージ (キャラクターから)
-    addMessageToChatLog(`こんにちは！私は${currentCharacter.name}です。どんなお話をしましょうか？`, "character");
+    let conversationHistory = []; // 会話履歴を保存
 
-    // Geminiが利用可能な場合、チャットセッションを初期化
-    if (geminiAvailable) {
-        try {
-            await initializeChatSession();
-        } catch (error) {
-            // initializeChatSession内でエラーメッセージ表示済みなので、ここではログのみ
-            console.error("Error during initial chat session initialization:", error);
-            addMessageToChatLog("チャットの初期化中にエラーが発生しました。ダミー応答モードで動作します。", "character");
-            geminiAvailable = false; // Gemini利用不可に設定
-        }
-    } else {
-        if (API_KEY && API_KEY !== "YOUR_GEMINI_API_KEY") {
-             // APIキーは設定されているが初期化に失敗した場合
-             addMessageToChatLog("Geminiとの接続に問題があるため、ダミー応答モードで動作します。", "character");
-        } else {
-            // APIキーが未設定の場合
-            addMessageToChatLog("APIキーが設定されていないため、ダミー応答モードで動作します。", "character");
-        }
+    // APIキーの確認
+    if (typeof GEMINI_API_KEY === 'undefined' || GEMINI_API_KEY === "YOUR_API_KEY") {
+        appendMessage("APIキーが設定されていません。config.js を確認してください。", 'bot', true);
+        console.error("APIキーが設定されていません。config.js を確認してください。");
+        sendButton.disabled = true;
+        userInput.disabled = true;
+        return;
     }
 
-    // チャットセッションの初期化 (または再初期化)
-    async function initializeChatSession() {
-        if (!model) {
-            console.log("Gemini model is not available. Cannot initialize chat session.");
-            throw new Error("Gemini model not available."); // geminiAvailableをfalseにするトリガー
-        }
-
-        const historyForChatInitialization = [];
-        if (currentCharacter.systemInstruction) {
-            historyForChatInitialization.push(
-                {
-                    role: "user", // システム指示は user ロールで与える
-                    parts: [{ text: currentCharacter.systemInstruction }],
-                },
-                {
-                    role: "model", // モデルからの確認応答を模倣
-                    parts: [{ text: "はい、承知いたしました。そのように振る舞います。" }],
-                }
-            );
-        }
-        // もし永続化された会話履歴があれば、ここに追加する
-        // currentCharacter.chatHistoryForDisplay.forEach(item => historyForChatInitialization.push(item));
-
-        console.log("Starting chat with initial history:", historyForChatInitialization);
-        try {
-            chatSession = model.startChat({
-                history: historyForChatInitialization,
-                generationConfig: {
-                    // maxOutputTokens: 256, // 例: 最大出力トークン数
-                    // temperature: 0.7,      // 例: 生成の多様性 (0.0-1.0)
-                    // topP: 0.9,             // 例: Top-pサンプリング
-                    // topK: 40,              // 例: Top-kサンプリング
-                },
-            });
-            console.log("Chat session initialized successfully with Gemini.");
-        } catch (error) {
-            console.error("Failed to start chat session with Gemini:", error);
-            addMessageToChatLog("Geminiとのチャットセッション開始に失敗しました。詳細はコンソールを確認してください。", "character");
-            throw error; // 上位のcatchでgeminiAvailableをfalseにする
-        }
-    }
-
-
-    sendButton.addEventListener('click', handleSendMessage);
+    sendButton.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
-            handleSendMessage();
+        if (event.key === 'Enter') {
+            sendMessage();
         }
     });
 
-    userInput.addEventListener('input', () => {
-        userInput.style.height = 'auto';
-        userInput.style.height = `${userInput.scrollHeight}px`;
-        sendButton.disabled = userInput.value.trim() === '';
-    });
-    sendButton.disabled = true; // 初期状態は無効
-
-    function handleSendMessage() {
+    function sendMessage() {
         const messageText = userInput.value.trim();
         if (messageText === '') return;
 
-        addMessageToChatLog(messageText, 'user');
-        // currentCharacter.chatHistoryForDisplay.push({ role: "user", parts: [{ text: messageText }] }); // 表示用履歴に追加する場合
-
+        appendMessage(messageText, 'user');
         userInput.value = '';
-        userInput.style.height = 'auto';
-        sendButton.disabled = true;
 
-        showTypingIndicator();
-        getBotResponse(messageText);
+        // ユーザーのメッセージを履歴に追加
+        conversationHistory.push({ role: "user", parts: [{ text: messageText }] });
+
+        callGeminiAPI(messageText);
     }
 
-    function addMessageToChatLog(text, sender, isTypingIndicator = false) {
-        const messageDiv = document.createElement('div');
-        
-        if (isTypingIndicator) {
-            messageDiv.classList.add('message', 'character-message', 'typing-indicator-container');
-            messageDiv.innerHTML = `
-                <div class="typing-indicator">
-                    <span></span><span></span><span></span>
-                </div>`;
-        } else {
-            messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'character-message');
-            const p = document.createElement('p');
-            // XSS対策としてtextContentを使用するが、Geminiからの応答がMarkdown等を含む場合は、
-            // 安全な方法でHTMLに変換する必要がある (例: DOMPurify と marked.js の組み合わせ)
-            // 今回は簡単のためtextContentのまま
-            p.textContent = text; 
-            messageDiv.appendChild(p);
+    function appendMessage(text, sender, isError = false) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', `${sender}-message`);
+        if (isError) {
+            messageElement.style.backgroundColor = 'red';
+            messageElement.style.color = 'white';
         }
-        
-        chatLog.appendChild(messageDiv);
-        chatLog.scrollTop = chatLog.scrollHeight;
-        return messageDiv;
+        messageElement.textContent = text;
+        chatLog.appendChild(messageElement);
+        chatLog.scrollTop = chatLog.scrollHeight; // 自動スクロール
     }
 
-    let typingIndicatorElement = null;
+    async function callGeminiAPI(userMessage) {
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
-    function showTypingIndicator() {
-        if (typingIndicatorElement) return;
-        typingIndicatorElement = addMessageToChatLog('', 'character', true);
-    }
+        // キャラクター設定を考慮したプロンプトを作成 (例)
+        // ここでは、会話履歴全体をコンテキストとして渡します。
+        // 必要であれば、ここにキャラクターの性格や口調を指示する固定のテキストを `conversationHistory` の先頭に追加することもできます。
+        // 例： const systemInstruction = { role: "user", parts: [{ text: "あなたは「猫耳メイドの○○」です。語尾に「にゃん」を付けてください。" }]};
+        //      const modelGreeting = { role: "model", parts: [{ text: "はい、ご主人様！にゃん！" }]};
+        //      const fullHistory = [systemInstruction, modelGreeting, ...conversationHistory];
 
-    function removeTypingIndicator() {
-        if (typingIndicatorElement) {
-            chatLog.removeChild(typingIndicatorElement);
-            typingIndicatorElement = null;
-        }
-    }
-
-    async function getBotResponse(userMessage) {
-        if (!geminiAvailable || !chatSession) {
-            // ダミー応答 (APIキーがない、初期化失敗、またはチャットセッションがない場合)
-            console.log("Gemini not available or chat session not initialized. Using dummy response.");
-            setTimeout(() => {
-                removeTypingIndicator();
-                const responses = [
-                    "ふむふむ、なるほどですね！",
-                    "それは面白い視点ですね！",
-                    "もっと詳しく聞かせていただけますか？",
-                    `「${userMessage}」についてですね。興味深いです。`,
-                    "わかります、わかります！",
-                    "ええと、ちょっと考えてみますね…（ダミー応答中です）"
-                ];
-                const dummyResponse = responses[Math.floor(Math.random() * responses.length)];
-                addMessageToChatLog(dummyResponse, 'character');
-            }, 1000 + Math.random() * 1000);
-            return;
-        }
+        const requestBody = {
+            // "contents" には、これまでの会話の履歴を含めます
+            // Gemini APIは、"user" と "model" の役割を交互に期待することが多いです
+            contents: conversationHistory,
+            generationConfig: {
+                // temperature: 0.7, // 応答のランダム性 (0.0-1.0)
+                // topK: 40,
+                // topP: 0.95,
+                // maxOutputTokens: 1024, // 最大出力トークン数
+            },
+            // safetySettings: [ // 必要に応じてコンテンツフィルタリング設定
+            //    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            //    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            //    // ... 他のカテゴリ
+            // ]
+        };
 
         try {
-            // Gemini APIにメッセージを送信
-            const result = await chatSession.sendMessage(userMessage);
-            const response = result.response;
-            const botResponseText = response.text();
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
 
-            // currentCharacter.chatHistoryForDisplay.push({ role: "model", parts: [{ text: botResponseText }] }); // 表示用履歴に追加する場合
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                appendMessage(`APIエラー: ${errorData.error?.message || response.statusText}`, 'bot', true);
+                // エラーが発生した場合、最後のユーザーメッセージを履歴から削除する（任意）
+                conversationHistory.pop();
+                return;
+            }
 
-            removeTypingIndicator();
-            addMessageToChatLog(botResponseText, 'character');
+            const data = await response.json();
+
+            if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
+                const botResponse = data.candidates[0].content.parts[0].text;
+                appendMessage(botResponse, 'bot');
+                // ボットの応答を履歴に追加
+                conversationHistory.push({ role: "model", parts: [{ text: botResponse }] });
+            } else {
+                console.error('API Response format error:', data);
+                // 応答がないか、形式が不正な場合のエラーメッセージ
+                let errorMessage = "AIからの応答がありませんでした。";
+                if (data.promptFeedback && data.promptFeedback.blockReason) {
+                    errorMessage = `AIからの応答がブロックされました。理由: ${data.promptFeedback.blockReason}`;
+                    if (data.promptFeedback.safetyRatings) {
+                        data.promptFeedback.safetyRatings.forEach(rating => {
+                           if(rating.blocked) errorMessage += ` (${rating.category})`;
+                        });
+                    }
+                }
+                appendMessage(errorMessage, 'bot', true);
+                // エラーが発生した場合、最後のユーザーメッセージを履歴から削除する（任意）
+                conversationHistory.pop();
+            }
 
         } catch (error) {
-            console.error("Error fetching response from Gemini:", error);
-            removeTypingIndicator();
-            let errorMessage = "申し訳ありません、応答の取得中にエラーが発生しました。";
-            if (error.message) {
-                if (error.message.includes("API key not valid")) {
-                    errorMessage = "APIキーが無効のようです。script.js内のAPI_KEYを確認してください。";
-                } else if (error.message.toLowerCase().includes("quota")) {
-                    errorMessage = "APIの利用上限に達したか、リクエスト頻度が高すぎる可能性があります。";
-                } else if (error.message.toLowerCase().includes("candidate_blocked_due_to_safety") || error.message.toLowerCase().includes("safety_settings")) {
-                    errorMessage = "応答が安全設定によりブロックされました。不適切な内容でないか確認し、別の表現でお試しください。";
-                } else if (error.message.toLowerCase().includes("text not available") || response?.promptFeedback?.blockReason) {
-                     errorMessage = "モデルが応答を生成できませんでした。入力内容を確認するか、別の質問をお試しください。";
-                } else if (error.message.includes("429") || error.message.toLowerCase().includes("resource has been exhausted")) { // 429 Too Many Requests
-                    errorMessage = "リクエストが多すぎます。少し時間をおいてから再度お試しください。";
-                }
-            }
-            addMessageToChatLog(errorMessage, 'character');
-            
-            // 特定のエラー(例: 認証エラー)の場合、Gemini利用不可にするなどの措置も検討
-            if (error.message && error.message.includes("API key not valid")) {
-                geminiAvailable = false; 
-                chatSession = null; // セッションもクリア
-                console.warn("API key seems invalid. Disabling Gemini features.");
-            }
-            // セッションが途切れたり、回復不能なエラーの場合はチャットセッションの再初期化を試みることもできる
-            // } else if (/* 特定のエラー条件 */) {
-            //    try {
-            //        await initializeChatSession();
-            //        addMessageToChatLog("チャットセッションを再初期化しました。もう一度お試しください。", "character");
-            //    } catch (reinitError) {
-            //        addMessageToChatLog("チャットセッションの再初期化に失敗しました。", "character");
-            //        geminiAvailable = false;
-            //    }
-            // }
+            console.error('Fetch Error:', error);
+            appendMessage('AIとの通信中にエラーが発生しました。', 'bot', true);
+            // エラーが発生した場合、最後のユーザーメッセージを履歴から削除する（任意）
+            conversationHistory.pop();
         }
     }
+
+    // 初期メッセージ (任意)
+    appendMessage('こんにちは！何かお話ししましょう。', 'bot');
+    // conversationHistory.push({ role: "model", parts: [{ text: "こんにちは！何かお話ししましょう。" }] }); // 初期メッセージも履歴に含める場合
+
 });
