@@ -28,11 +28,11 @@
         <!-- 画面2: トークルーム -->
         <section id="chat-room-screen" class="screen">
             <header class="screen-header chat-room-header">
-                <button id="back-to-list-btn" class="header-btn"><img src="images/icons/back_arrow.png" alt="戻る"></button>
+                <button id="back-to-list-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1 id="chat-member-name"></h1>
                 <div class="chat-header-actions">
-                    <button id="new-talk-btn" class="header-btn"><img src="images/icons/menu_edit_square.png" alt="新規トーク"></button>
-                    <button id="member-settings-btn" class="header-btn"><img src="images/icons/menu_hamburger.png" alt="設定"></button>
+                    <button id="new-talk-btn" class="header-btn"><img src="images/icons/header_new_chat.png" alt="新規トーク"></button>
+                    <button id="member-settings-btn" class="header-btn"><img src="images/icons/header_menu.png" alt="設定"></button>
                 </div>
             </header>
             <main class="screen-content chat-log-container">
@@ -54,7 +54,7 @@
         <!-- 画面3: メンバー設定 -->
         <section id="member-settings-screen" class="screen">
             <header class="screen-header member-settings-header">
-                <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/back_arrow.png" alt="戻る"></button>
+                <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1 id="settings-member-name"></h1>
             </header>
             <main class="screen-content settings-content">
@@ -93,7 +93,9 @@
         <!-- 画面4: 共通設定 (フッター) -->
         <section id="common-settings-screen" class="screen">
             <header class="screen-header">
+                 <button id="back-to-prev1-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1>共通設定</h1>
+                <div style="width: 34px;"></div> <!-- 右側のスペース調整用ダミー -->
             </header>
             <main class="screen-content">
                 <p>ここは共通設定画面です。</p>
@@ -103,7 +105,9 @@
         <!-- 画面5: ユーザープロフィール (フッター) -->
         <section id="user-profile-screen" class="screen">
             <header class="screen-header">
+                <button id="back-to-prev2-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1>プロフィール</h1>
+                <div style="width: 34px;"></div> <!-- 右側のスペース調整用ダミー -->
             </header>
             <main class="screen-content">
                 <p>ここはユーザープロフィール画面です。</p>
@@ -112,17 +116,17 @@
 
         <!-- フッターナビゲーション -->
         <nav id="footer-nav">
-            <button class="nav-item active" data-screen="member-list-screen">
+            <button class="nav-item active" data-screen="member-list-screen" data-default-icon-on="images/icons/nav_talk_on.png" data-default-icon-off="images/icons/nav_talk_off.png">
                 <img src="images/icons/nav_talk_on.png" alt="トーク" class="nav-icon-on">
                 <img src="images/icons/nav_talk_off.png" alt="トーク" class="nav-icon-off" style="display:none;">
                 <span>トーク</span>
             </button>
-            <button class="nav-item" data-screen="common-settings-screen">
+            <button class="nav-item" data-screen="common-settings-screen" data-default-icon-on="images/icons/nav_settings_on.png" data-default-icon-off="images/icons/nav_settings_off.png">
                 <img src="images/icons/nav_settings_off.png" alt="共通設定" class="nav-icon-off">
                 <img src="images/icons/nav_settings_on.png" alt="共通設定" class="nav-icon-on" style="display:none;">
                 <span>共通設定</span>
             </button>
-            <button class="nav-item" data-screen="user-profile-screen">
+            <button class="nav-item" data-screen="user-profile-screen" data-default-icon-on="images/icons/nav_profile_on.png" data-default-icon-off="images/icons/nav_profile_off.png">
                 <img src="images/icons/nav_profile_off.png" alt="プロフィール" class="nav-icon-off">
                 <img src="images/icons/nav_profile_on.png" alt="プロフィール" class="nav-icon-on" style="display:none;">
                 <span>プロフィール</span>
