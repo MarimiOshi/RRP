@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>NiziU Talk</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json"> <!-- PWA用、不要なら削除 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff"> <!-- 全体背景を白に -->
 </head>
 <body>
     <div id="app-container">
 
+        <!-- 画面1: メンバー一覧 -->
         <section id="member-list-screen" class="screen active">
             <header class="screen-header">
                 <h1>トーク</h1>
@@ -33,6 +34,7 @@
             </main>
         </section>
 
+        <!-- 画面2: トークルーム -->
         <section id="chat-room-screen" class="screen">
             <header class="screen-header chat-room-header">
                 <button id="back-to-list-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -53,11 +55,12 @@
             </footer>
         </section>
 
+        <!-- 画面3: メンバー設定 -->
         <section id="member-settings-screen" class="screen">
             <header class="screen-header member-settings-header">
                 <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1 id="settings-member-name-title"></h1>
-                <div style="width: 34px;"></div>
+                <div style="width: 34px;"></div> <!-- ヘッダー中央寄せのためのダミー -->
             </header>
             <main class="screen-content settings-content">
                 <div class="member-profile-icon-area">
@@ -100,6 +103,7 @@
             </main>
         </section>
 
+        <!-- 画面4: 共通設定 -->
         <section id="common-settings-screen" class="screen">
             <header class="screen-header">
                  <button id="back-to-prev-common-settings-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
@@ -152,6 +156,7 @@
             </main>
         </section>
 
+        <!-- 画面5: ユーザープロフィール -->
         <section id="user-profile-screen" class="screen">
             <header class="screen-header">
                 <button id="back-to-prev-user-profile-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
