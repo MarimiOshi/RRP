@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>NiziU Talk</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json"> <!-- PWA用、不要なら削除 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#f8f8f8">
@@ -13,7 +13,7 @@
 <body>
     <div id="app-container">
 
-        <!-- 画面1: メンバー一覧 (トークリスト) -->
+        <!-- 画面1: メンバー一覧 -->
         <section id="member-list-screen" class="screen active">
             <header class="screen-header">
                 <h1>トーク</h1>
@@ -56,6 +56,7 @@
             <header class="screen-header member-settings-header">
                 <button id="back-to-chat-btn" class="header-btn"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1 id="settings-member-name"></h1>
+                 <div style="width: 34px;"></div> <!-- 右側のスペース調整用ダミー -->
             </header>
             <main class="screen-content settings-content">
                 <div class="member-profile-icon-area">
@@ -86,31 +87,112 @@
                         <li><span>得意な前戯</span><span id="setting-fav-foreplay" class="setting-value"></span></li>
                     </ul>
                 </div>
-                 <button id="save-settings-btn" class="action-button">設定を保存</button>
+                 <button id="save-member-settings-btn" class="action-button">メンバー設定を保存</button> <!-- ID変更 -->
             </main>
         </section>
 
         <!-- 画面4: 共通設定 (フッター) -->
         <section id="common-settings-screen" class="screen">
             <header class="screen-header">
-                 <button id="back-to-prev1-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
+                 <button id="back-to-prev-common-settings-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
                 <h1>共通設定</h1>
-                <div style="width: 34px;"></div> <!-- 右側のスペース調整用ダミー -->
+                <div style="width: 34px;"></div>
             </header>
-            <main class="screen-content">
-                <p>ここは共通設定画面です。</p>
+            <main class="screen-content settings-content">
+                <div class="settings-group">
+                    <h3>チャット応答</h3>
+                    <ul class="settings-list">
+                        <li>
+                            <span>セリフの長さ</span>
+                            <select id="setting-output-length" class="setting-select">
+                                <option value="short">短め</option>
+                                <option value="medium" selected>普通</option>
+                                <option value="long">長め</option>
+                            </select>
+                        </li>
+                        <li>
+                            <span>説明文のスタイル</span>
+                            <select id="setting-desc-style" class="setting-select">
+                                <option value="concise" selected>簡潔に</option>
+                                <option value="detailed">詳しく</option>
+                                <option value="none">説明なし</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+                <div class="settings-group">
+                    <h3>その他 (UI設定例)</h3>
+                    <ul class="settings-list">
+                        <li>
+                            <span>効果音</span>
+                            <select id="setting-sound-effect" class="setting-select">
+                                <option value="typeA">タイプA</option>
+                                <option value="typeB">タイプB</option>
+                                <option value="off" selected>オフ</option>
+                            </select>
+                        </li>
+                         <li>
+                            <span>アプリテーマ</span>
+                             <select id="setting-app-theme" class="setting-select">
+                                <option value="light" selected>ライト</option>
+                                <option value="dark">ダーク (未実装)</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+                <button id="save-common-settings-btn" class="action-button">共通設定を保存</button>
             </main>
         </section>
 
         <!-- 画面5: ユーザープロフィール (フッター) -->
         <section id="user-profile-screen" class="screen">
             <header class="screen-header">
-                <button id="back-to-prev2-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
-                <h1>プロフィール</h1>
-                <div style="width: 34px;"></div> <!-- 右側のスペース調整用ダミー -->
+                <button id="back-to-prev-user-profile-btn" class="header-btn back-from-footer-screen"><img src="images/icons/header_back.png" alt="戻る"></button>
+                <h1>あなたのプロフィール</h1>
+                <div style="width: 34px;"></div>
             </header>
-            <main class="screen-content">
-                <p>ここはユーザープロフィール画面です。</p>
+            <main class="screen-content settings-content">
+                <div class="settings-group">
+                    <h3>基本情報</h3>
+                    <ul class="settings-list">
+                        <li>
+                            <span>名前 (AIがあなたを呼ぶ名前)</span>
+                            <input type="text" id="profile-name" class="setting-input" placeholder="例: りょうや">
+                        </li>
+                        <li>
+                            <span>性別</span>
+                            <select id="profile-gender" class="setting-select">
+                                <option value="male" selected>男性</option>
+                                <option value="female">女性</option>
+                                <option value="other">その他</option>
+                                <option value="private">非公開</option>
+                            </select>
+                        </li>
+                        <li>
+                            <span>年齢 (任意)</span>
+                            <input type="number" id="profile-age" class="setting-input" placeholder="例: 25">
+                        </li>
+                    </ul>
+                </div>
+                <div class="settings-group">
+                    <h3>AIへのあなたの印象 (任意)</h3>
+                    <ul class="settings-list">
+                        <li>
+                            <span>あなたの性格 (AIにどう見られたいか)</span>
+                            <input type="text" id="profile-personality" class="setting-input" placeholder="例: 優しくて面白い人">
+                        </li>
+                        <li>
+                            <span>AIとの関係性</span>
+                             <select id="profile-relationship" class="setting-select">
+                                <option value="friend">友達</option>
+                                <option value="lover" selected>恋人</option>
+                                <option value="senpai">先輩</option>
+                                <option value="kohai">後輩</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+                 <button id="save-user-profile-btn" class="action-button">プロフィールを保存</button>
             </main>
         </section>
 
@@ -134,7 +216,7 @@
         </nav>
     </div>
 
-    <script src="config.js"></script>
+    <script src="config.js"></script> <!-- APIキー -->
     <script src="script.js"></script>
 </body>
 </html>
