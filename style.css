@@ -1,8 +1,9 @@
 /* style.css */
 :root {
-    --base-bg-color: #f8f8f8;
+    --base-bg-color: #f8f8f8; /* リスト画面などの基本背景 */
+    --chat-room-bg-color: #FFFFFF; /* チャット画面全体の背景色 */
     --default-text-color: #333333;
-    --header-bg-color: #ffffff;
+    --header-bg-color: #ffffff; /* ヘッダー背景 (チャット画面ではメンバーカラーで上書き) */
     --header-border-color: #e0e0e0;
     --list-item-border-color: #eeeeee;
     --footer-nav-bg-color: #ffffff;
@@ -11,10 +12,11 @@
     --footer-nav-active-text-color: #333333;
 
     --member-main-color: #FFA500; /* JSで上書き */
-    --member-light-bg-color: #fff3e0; /* JSで上書き */
+    --member-light-bg-color: #E8A363; /* チャットログ背景はメンバーカラーの淡色 - JSで上書き */
     --member-chat-bubble-user: var(--member-main-color);
-    --member-chat-bubble-bot: #ffffff;
-    --bot-bubble-border-color: #f0f0f0;
+    --member-chat-bubble-bot: #f0f0f0; /* ボットのバブル背景を少しグレーに */
+    --bot-bubble-border-color: #e0e0e0;
+    --input-area-bg-color: #FFFFFF; /* 入力エリア背景を白に */
 }
 
 body {
@@ -23,31 +25,31 @@ body {
     background-color: var(--base-bg-color);
     color: var(--default-text-color);
     overscroll-behavior-y: contain;
-    /* スクロールバーを常に表示してガタつきを防ぐ (任意) */
-    /* overflow-y: scroll;  */
 }
 body.dark-theme {
-    --base-bg-color: #121212;
-    --default-text-color: #e0e0e0;
-    --header-bg-color: #1e1e1e;
-    --header-border-color: #333333;
-    --list-item-border-color: #2c2c2c;
-    --footer-nav-bg-color: #1e1e1e;
-    --footer-nav-border-color: #333333;
-    --footer-nav-text-color: #bbbbbb;
+    --base-bg-color: #1c1c1e;
+    --chat-room-bg-color: #000000;
+    --default-text-color: #f0f0f0;
+    --header-bg-color: #2c2c2e;
+    --header-border-color: #3a3a3c;
+    --list-item-border-color: #3a3a3c;
+    --footer-nav-bg-color: #2c2c2e;
+    --footer-nav-border-color: #3a3a3c;
+    --footer-nav-text-color: #999999;
     --footer-nav-active-text-color: #ffffff;
-    --member-chat-bubble-bot: #2c2c2c;
+    --member-chat-bubble-bot: #2c2c2e;
     --bot-bubble-border-color: #444444;
+    --input-area-bg-color: #000000;
 }
 
 
 #app-container {
     display: flex;
     flex-direction: column;
-    height: 100dvh; /* dvh に変更 */
+    height: 100dvh;
     max-width: 480px;
     margin: 0 auto;
-    background-color: var(--header-bg-color);
+    background-color: var(--chat-room-bg-color);
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden;
 }
@@ -55,32 +57,44 @@ body.dark-theme {
 .screen {
     display: none;
     flex-direction: column;
-    height: calc(100dvh - 60px); /* dvh に変更 (フッターの高さを引く) */
-    /* Safariでdvhとcalcの組み合わせに問題がある場合、フォールバックやJSでの高さ調整が必要なことも */
-    /* height: 100%; 親要素がdvhなのでこれでも良いかも、要テスト */
+    height: calc(100dvh - 60px); /* フッターナビの高さ */
     background-color: var(--base-bg-color);
 }
 .screen.active {
     display: flex;
 }
+#chat-room-screen.active {
+    background-color: var(--chat-room-bg-color);
+}
+
 
 .screen-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 15px;
+    padding: 0 10px;
     background-color: var(--header-bg-color);
-    border-bottom: 1px solid var(--header-border-color);
-    min-height: 40px; /* または em/rem 単位 */
-    height: 50px; /* 固定ヘッダー高さ (例) */
+    height: 56px;
     position: sticky;
     top: 0;
     z-index: 10;
     color: var(--default-text-color);
-    flex-shrink: 0; /* ヘッダーが縮まないように */
+    flex-shrink: 0;
 }
+#member-list-screen .screen-header,
+#common-settings-screen .screen-header,
+#user-profile-screen .screen-header,
+#member-settings-screen .screen-header {
+    border-bottom: 1px solid var(--header-border-color);
+}
+#chat-room-screen .screen-header { /* チャットルームのヘッダーは特別に背景色をJSで設定 */
+    /* border-bottom: none; */ /* 必要なら境界線を消す */
+}
+
+
 .screen-header h1 {
-    font-size: 1.2em;
+    font-size: 1.1em;
+    font-weight: 600;
     margin: 0;
     text-align: center;
     flex-grow: 1;
@@ -91,42 +105,43 @@ body.dark-theme {
 .header-btn {
     background: none;
     border: none;
-    padding: 5px;
+    padding: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
 }
 .header-btn img {
-    width: 24px;
-    height: 24px;
+    width: calc(24px * 1.5); /* ヘッダーアイコンサイズ調整 */
+    height: calc(24px * 1.5);
 }
+
 .chat-header-actions {
     display: flex;
     flex-shrink: 0;
 }
 .chat-header-actions .header-btn:not(:last-child) {
-    margin-right: 10px;
+    margin-right: 0;
 }
 
 .screen-content {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 15px;
-    /* height: calc(100dvh - 50px - 60px); ヘッダーとフッターの高さを引いた残り */
-    /* 上記は.screenで高さを指定しているので、ここでは不要な場合が多い */
 }
+#member-list-screen .screen-content,
 .settings-content {
-    padding: 10px;
+    padding: 10px 15px;
 }
 
 
 #member-list-screen .screen-header h1 {
     text-align: left;
     flex-grow: 0;
+    font-size: 1.4em;
+    font-weight: bold;
 }
 #member-list {
     list-style: none;
@@ -188,45 +203,49 @@ body.dark-theme .message-count-wrapper img {
 }
 
 
-/* --- トークルーム --- */
+/* --- トークルームUI調整 --- */
 .chat-log-container {
-    padding: 10px;
-    background-color: var(--member-light-bg-color);
-    flex-grow: 1; /* この要素が残りの高さを埋めるように */
-    overflow-y: auto; /* チャットログ自体をスクロール可能に */
-    /* .screen-contentからpaddingを移す場合は注意 */
+    padding: 0 15px 10px 15px; /* 上パディングなし */
+    background-color: var(--chat-room-bg-color); /* 指示通り白に */
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex; /* これを追加して、#chat-logがflexアイテムとして振る舞うように */
+    flex-direction: column; /* #chat-logを縦に並べる */
 }
 #chat-log {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding-bottom: 10px; /* スクロールした際の見切れ防止 */
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%; /* 横幅いっぱい */
 }
 
 .message-group {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* アイコン＋名前 と バブル を縦に */
 }
 .message-group.user {
-    align-items: flex-end;
+    align-items: flex-end; /* メッセージ全体を右に */
 }
 .message-group.bot {
-    align-items: flex-start;
-    max-width: 85%;
+    align-items: flex-start; /* メッセージ全体を左に */
+    max-width: 88%; /* ボットメッセージグループの最大幅 */
 }
 
 .message-sender-info {
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    padding-left: 5px; /* アイコンの左の小さなスペース */
 }
 .message-icon-bot {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    margin-right: 8px;
+    margin-right: 7px;
     flex-shrink: 0;
-    border: 2px solid var(--member-main-color);
+    border: 1.5px solid var(--member-main-color);
     background-color: #000;
 }
 .message-icon-bot img {
@@ -236,37 +255,43 @@ body.dark-theme .message-count-wrapper img {
     border-radius: 50%;
 }
 .message-sender-name {
-    font-size: 0.9em;
-    color: var(--default-text-color);
-    font-weight: 500;
+    font-size: 0.8em;
+    color: #666;
+    font-weight: 400;
+}
+body.dark-theme .message-sender-name {
+    color: #bbb;
 }
 
+
 .message-bubble {
-    padding: 10px 14px;
-    border-radius: 16px;
+    padding: 9px 14px;
+    border-radius: 18px; /* 全体的に丸みを維持 */
     word-wrap: break-word;
     position: relative;
-    line-height: 1.45;
+    line-height: 1.5;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.06);
 }
 .message-bubble.user {
     background-color: var(--member-chat-bubble-user);
     color: white;
-    border-bottom-right-radius: 5px;
+    border-bottom-right-radius: 6px; /* 右下だけ少し角張る */
     max-width: 80%;
 }
 .message-bubble.bot-bubble {
     background-color: var(--member-chat-bubble-bot);
     color: var(--default-text-color);
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 0;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    width: 100%;
+    border-bottom-left-radius: 6px; /* 左下だけ少し角張る */
+    border-top-left-radius: 18px;  /* 左上は丸い */
+    /* border-top-right-radius: 18px; 右上も丸い */
+    width: auto; /* 内容に合わせる */
+    display: inline-block; /* 左寄せで幅を内容に合わせるため */
+    max-width: 100%; /* 親のmax-widthを超えることはない */
 }
 
-.message-text { }
 .message-text.large-placeholder {
-    min-height: 220px;
-    background-color: var(--member-chat-bubble-bot);
+    min-height: 180px;
+    background-color: var(--member-chat-bubble-bot); /* テーマに合わせる */
     border-radius: 12px;
 }
 
@@ -309,31 +334,13 @@ body.dark-theme .message-bubble.system-error-bubble {
 
 
 .chat-input-area {
-    padding: 10px;
-    border-top: 1px solid var(--header-border-color);
-    background-color: var(--base-bg-color);
-    flex-shrink: 0; /* 入力エリアが縮まないように */
+    padding: 10px 12px; /* パディング少し調整 */
+    border-top: 1px solid #EDEDED;
+    background-color: var(--input-area-bg-color);
+    flex-shrink: 0;
+    box-shadow: 0 -1px 3px rgba(0,0,0,0.04);
 }
-#reply-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
-    justify-content: center;
-}
-.suggestion-btn {
-    padding: 6px 12px;
-    border: 1px solid var(--member-main-color);
-    color: var(--member-main-color);
-    background-color: var(--header-bg-color);
-    border-radius: 15px;
-    font-size: 0.9em;
-    cursor: pointer;
-}
-.suggestion-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
+/* #reply-suggestions スタイルは削除 */
 
 .input-wrapper {
     display: flex;
@@ -341,16 +348,24 @@ body.dark-theme .message-bubble.system-error-bubble {
 }
 #user-input {
     flex-grow: 1;
-    padding: 10px 15px;
-    border: 1px solid var(--header-border-color);
-    border-radius: 20px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 22px; /* より丸く */
     margin-right: 8px;
     font-size: 1em;
-    background-color: var(--header-bg-color);
+    background-color: #EFF1F3; /* 入力フィールド背景 */
     color: var(--default-text-color);
+    outline: none;
+}
+body.dark-theme #user-input {
+    background-color: #3a3a3c;
+    border-color: #4a4a4c;
+}
+#user-input:focus {
+    box-shadow: 0 0 0 2px var(--member-main-color_alpha, rgba(255,165,0,0.3));
 }
 #user-input:disabled {
-    background-color: var(--base-bg-color);
+    background-color: #e9ecef;
     opacity: 0.7;
 }
 #send-button {
@@ -358,8 +373,8 @@ body.dark-theme .message-bubble.system-error-bubble {
     border: none;
     padding: 0;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -398,7 +413,7 @@ body.dark-theme #send-button img {
     border: 1px solid var(--header-border-color);
 }
 .settings-group h3 {
-    font-size: 0.95em;
+    font-size: 0.9em;
     color: var(--default-text-color);
     padding: 15px 0 10px;
     margin: 0;
@@ -427,7 +442,7 @@ body.dark-theme #send-button img {
     flex-shrink: 0;
     flex-basis: 40%;
     word-break: keep-all;
-    font-size: 0.9em;
+    font-size: 0.85em;
 }
 .setting-value {
     padding: 6px 12px;
@@ -444,7 +459,7 @@ body.dark-theme #send-button img {
     padding: 8px 10px;
     border: 1px solid var(--header-border-color);
     border-radius: 6px;
-    font-size: 0.9em;
+    font-size: 0.85em;
     background-color: var(--header-bg-color);
     color: var(--default-text-color);
     flex-grow: 1;
@@ -483,11 +498,11 @@ body.dark-theme #send-button img {
     align-items: center;
     background-color: var(--footer-nav-bg-color);
     border-top: 1px solid var(--footer-nav-border-color);
-    height: 60px; /* 固定フッター高さ */
+    height: 60px;
     position: sticky;
     bottom: 0;
     z-index: 10;
-    flex-shrink: 0; /* フッターが縮まないように */
+    flex-shrink: 0;
 }
 .nav-item {
     background: none;
